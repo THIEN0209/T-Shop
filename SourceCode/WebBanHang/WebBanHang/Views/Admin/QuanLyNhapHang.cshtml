@@ -1,0 +1,110 @@
+﻿@model IEnumerable<WebBanHang.Models.PhieuNhap>
+
+@{
+    ViewData["Title"] = "Quản Lý Nhập Hàng";
+}
+<div class="container mt-4">
+    <h3>Import Phiếu Nhập từ Excel</h3>
+
+    <form asp-action="ImportExcel" asp-controller="Admin" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="file" class="form-label">Chọn file Excel (.xlsx)</label>
+            <input type="file" name="file" id="file" class="form-control" accept=".xlsx,.xls" required />
+        </div>
+
+        <div class="mb-3">
+            <a href="/files/Mau_Import_PhieuNhap.xlsx" class="btn btn-outline-secondary btn-sm" download>
+                📥 Tải file mẫu
+            </a>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Import
+        </button>
+    </form>
+
+    <hr />
+    <p class="text-muted small">
+        Lưu ý: File phải theo đúng cấu trúc mẫu — dòng dữ liệu bắt đầu từ dòng 5,
+        các cột theo thứ tự: <strong>MaNcc, MaCtsp, SoLuong, DonGiaNhap</strong>.
+        Tất cả các dòng trong 1 file phải có cùng MaNcc (1 file = 1 phiếu nhập từ 1 nhà cung cấp).
+    </p>
+</div>
+<div class="page-container">
+
+    <div class="list-panel" style="width:100%;">
+
+        <h2>Danh Sách Phiếu Nhập</h2>
+
+        <table class="table-danhmuc">
+
+            <thead>
+                <tr>
+                    <th>Mã Phiếu Nhập</th>
+                    <th>Nhà Cung Cấp</th>
+                    <th>Ngày Nhập</th>
+                    <th>Tổng Tiền</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>@item.MaPn</td>
+
+                        <td>@item.MaNcc</td>
+
+                        <td>@item.NgayNhap.ToString("dd/MM/yyyy HH:mm")</td>
+
+                        <td>@string.Format("{0:N0} đ", item.TongTien)</td>
+
+                        <td>
+
+                            <a asp-action="ChiTietPhieuNhap"
+                               asp-route-id="@item.MaPn"
+                               class="btn-edit">
+                                Xem Chi Tiết
+                            </a>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+@section Scripts {
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(TempData["Error"])',
+            });
+        </script>
+    }
+}

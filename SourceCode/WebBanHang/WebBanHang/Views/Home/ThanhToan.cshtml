@@ -1,0 +1,166 @@
+﻿<link rel="stylesheet" href="~/css/thanhtoan.css" />
+@{
+    ViewData["Title"] = "Thanh Toán";
+    var ketQuaKm = ViewBag.KetQuaKm;
+    var diaChiGiao = ViewBag.DiaChiGiao;
+}
+<div class="checkout-container">
+    <div class="checkout-left">
+        <h2>Thông tin giao hàng</h2>
+        <div class="address-box">
+            <div class="address-header">
+                <p><strong>@ViewBag.TaiKhoan.HoTen</strong></p>
+                <a href="@Url.Action("ChonDiaChi")" class="btn-change-address">Thay đổi địa chỉ</a>
+            </div>
+            <p>@diaChiGiao.SdtNguoiNhan</p>
+            <p>
+                @diaChiGiao.DiaChiCuThe,
+                @diaChiGiao.PhuongXa,
+                @diaChiGiao.QuanHuyen,
+                @diaChiGiao.TinhThanh
+            </p>
+        </div>
+
+        <form asp-action="DatHang" method="post" id="formDatHang">
+            @Html.AntiForgeryToken()
+            <div class="payment-box">
+                <h2>Phương thức thanh toán</h2>
+                @foreach (var item in ViewBag.PTTT)
+                {
+                    <label class="payment-item">
+                        <input type="radio" name="maPttt" value="@item.MaPttt" required />
+                        <span>@item.TenPttt</span>
+                    </label>
+                }
+            </div>
+            <div class="note-box">
+                <h2>Ghi chú</h2>
+                <textarea name="ghiChu" rows="4" placeholder="Nhập ghi chú nếu có..."></textarea>
+            </div>
+            <button class="btn-order" type="submit">Đặt hàng</button>
+        </form>
+    </div>
+
+    <div class="checkout-right">
+        <h2>Đơn hàng của bạn</h2>
+        @foreach (var item in ViewBag.GioHang)
+        {
+            string img = item.MaCtspNavigation.MaSpNavigation.MaSp + "_" + item.MaCtspNavigation.MaMau + ".png";
+            double thanhTienGoc = item.SoLuong * item.MaCtspNavigation.MaSpNavigation.Gia;
+            double giamRieng = ketQuaKm.GiamTheoSanPham.ContainsKey((int)item.MaCtsp)
+            ? ketQuaKm.GiamTheoSanPham[(int)item.MaCtsp] : 0;
+
+            <div class="cart-item">
+                <img src="~/imageSP/@img" onerror="this.src='/image/no-image.png'" />
+                <div class="item-info">
+                    <h4>@item.MaCtspNavigation.MaSpNavigation.TenSp</h4>
+                    <p>
+                        Màu: @item.MaCtspNavigation.MaMauNavigation.TenMau
+                        | Size: @item.MaCtspNavigation.MaSizeNavigation.TenSize
+                    </p>
+                    <p>SL: @item.SoLuong</p>
+                    @if (giamRieng > 0)
+                    {
+                        <p class="item-discount-tag">🏷️ Giảm @giamRieng.ToString("N0") đ</p>
+                    }
+                </div>
+                <div class="item-price">
+                    @if (giamRieng > 0)
+                    {
+                        <div class="price-old">@thanhTienGoc.ToString("N0") đ</div>
+                        <div class="price-new">@((thanhTienGoc - giamRieng).ToString("N0")) đ</div>
+                    }
+                    else
+                    {
+                        <div>@thanhTienGoc.ToString("N0") đ</div>
+                    }
+                </div>
+            </div>
+        }
+
+        <hr />
+
+        <div class="code-box">
+            <input type="text" id="inputMaCode" placeholder="Nhập mã giảm giá"
+                   value="@ViewBag.MaCodeDangDung" />
+            <button type="button" id="btnApDungCode">Áp dụng</button>
+        </div>
+        <div id="codeMessage" class="code-message"></div>
+
+        <div class="discount-detail" id="discountDetail">
+            @foreach (var km in ketQuaKm.ChiTietGiam)
+            {
+                <div class="discount-line">
+                    <span>@km.TenKm <em>(@km.LoaiKm)</em></span>
+                    <span>- @km.SoTienGiam.ToString("N0") đ</span>
+                </div>
+            }
+        </div>
+
+        <div class="summary-line">
+            <span>Tạm tính</span>
+            <span id="tongTienGoc">@ketQuaKm.TongTienGoc.ToString("N0") đ</span>
+        </div>
+        <div class="summary-line">
+            <span>Giảm giá</span>
+            <span id="tongGiamGia">- @ketQuaKm.TongGiamGia.ToString("N0") đ</span>
+        </div>
+
+        <div class="total-price">
+            <span>Tổng cộng</span>
+            <strong id="tongTienSauGiam">@ketQuaKm.TongTienSauGiam.ToString("N0") đ</strong>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('btnApDungCode').addEventListener('click', function () {
+            var code = document.getElementById('inputMaCode').value.trim();
+            var token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            var msgBox = document.getElementById('codeMessage');
+
+            fetch('@Url.Action("ApDungMaCode")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': token
+                },
+                body: 'code=' + encodeURIComponent(code)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.thanhCong) {
+                    msgBox.textContent = data.thongBao;
+                    msgBox.className = 'code-message error';
+                    return;
+                }
+
+                msgBox.textContent = code ? 'Áp dụng mã thành công!' : 'Đã bỏ mã giảm giá.';
+                msgBox.className = 'code-message success';
+
+                document.getElementById('tongTienGoc').textContent = formatTien(data.tongTienGoc);
+                document.getElementById('tongGiamGia').textContent = '- ' + formatTien(data.tongGiamGia);
+                document.getElementById('tongTienSauGiam').textContent = formatTien(data.tongTienSauGiam);
+
+                var detailBox = document.getElementById('discountDetail');
+                detailBox.innerHTML = '';
+                data.chiTietGiam.forEach(function (km) {
+                    var div = document.createElement('div');
+                    div.className = 'discount-line';
+                    div.innerHTML = '<span>' + km.tenKm + ' <em>(' + km.loaiKm + ')</em></span>' +
+                                     '<span>- ' + formatTien(km.soTienGiam) + '</span>';
+                    detailBox.appendChild(div);
+                });
+            })
+            .catch(() => {
+                msgBox.textContent = 'Có lỗi xảy ra, vui lòng thử lại!';
+                msgBox.className = 'code-message error';
+            });
+        });
+
+        function formatTien(so) {
+            return Math.round(so).toLocaleString('vi-VN') + ' đ';
+        }
+    </script>
+}

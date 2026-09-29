@@ -1,0 +1,130 @@
+﻿@model IEnumerable<WebBanHang.Models.YeuThich>
+
+@{
+    ViewData["Title"] = "Sản phẩm yêu thích";
+}
+
+<link rel="stylesheet" href="~/css/TaiKhoan.css" asp-append-version="true" />
+
+<div class="account-container">
+
+    <div class="account-header">
+        <h2>Sản phẩm yêu thích</h2>
+        <p>Danh sách các sản phẩm bạn đã lưu.</p>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-box">
+
+            <div class="empty-icon">
+                ❤
+            </div>
+
+            <h3>Bạn chưa có sản phẩm yêu thích nào</h3>
+
+            <p>
+                Hãy thêm những sản phẩm bạn thích để xem lại sau.
+            </p>
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="btn-black">
+                Mua sắm ngay
+            </a>
+
+        </div>
+    }
+    else
+    {
+        <div class="favorite-list">
+
+            @foreach (var item in Model)
+            {
+                var ctsp = item.MaSpNavigation.ChiTietSanPhams.FirstOrDefault();
+
+                <div class="favorite-card">
+
+                    <div class="favorite-image">
+
+                        
+                            <img src="~/imageSP/@(item.MaSp)_macdinh.png" />
+                        
+
+                    </div>
+
+                    <div class="favorite-info">
+
+                        <h3>
+                            @item.MaSpNavigation.TenSp
+                        </h3>
+
+                        <p>
+                            Đã thêm:
+                            @item.NgayThem.ToString("dd/MM/yyyy")
+                        </p>
+
+                    </div>
+
+                    <div class="favorite-action">
+
+                        <a asp-controller="Home"
+                           asp-action="ChiTietSanPham"
+                           asp-route-id="@item.MaSp"
+                           class="btn-black">
+
+                            Xem sản phẩm
+
+                        </a>
+
+                        <a asp-action="XoaYeuThich"
+                           asp-route-id="@item.MaSp"
+                           class="btn-delete"
+                           onclick="return confirm('Xóa sản phẩm khỏi danh sách yêu thích?')">
+
+                            Xóa
+
+                        </a>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+
+</div>
+@section Scripts {
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(@TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(@TempData["Error"])'
+            });
+        </script>
+    }
+
+
+
+}

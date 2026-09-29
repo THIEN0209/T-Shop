@@ -1,0 +1,351 @@
+﻿@{
+    ViewData["Title"] = "Gán Sản Phẩm Khuyến Mãi";
+}
+
+<form asp-action="GanSanPhamKhuyenMai" method="post">
+
+    <div class="page-container">
+
+        <!-- ===================== -->
+        <!-- PANEL BÊN TRÁI -->
+        <!-- ===================== -->
+
+        <div class="form-panel">
+
+            <h2>Gán Sản Phẩm Khuyến Mãi</h2>
+
+            <div class="form-item">
+
+                <label>Khuyến mãi</label>
+
+                <select class="form-control"
+                        id="cmbKhuyenMai"
+                        name="maKm">
+
+                    <option value="">-- Chọn khuyến mãi --</option>
+
+                    @foreach (var km in ViewBag.listKM)
+                    {
+                        if (ViewBag.MaKm != null && (int)ViewBag.MaKm == km.MaKm)
+                        {
+                            <option value="@km.MaKm" selected>
+                                @km.TenKm
+                            </option>
+                        }
+                        else
+                        {
+                            <option value="@km.MaKm">
+                                @km.TenKm
+                            </option>
+                        }
+                    }
+
+                </select>
+
+            </div>
+
+            <div style="margin-top:25px;">
+
+                <h4 id="lblDaChon"
+                    style="margin-bottom:20px;color:#007bff;">
+                </h4>
+
+            </div>
+
+            <div style="display:flex;
+                        flex-direction:column;
+                        gap:12px;">
+
+                <button type="button"
+                        class="btn-save"
+                        style="width:100%;"
+                        id="btnChonTatCa">
+
+                    Chọn tất cả
+
+                </button>
+
+                <button type="button"
+                        class="btn-delete"
+                        id="btnBoTatCa">
+
+                    Bỏ chọn
+
+                </button>
+
+            </div>
+
+            <hr style="margin:25px 0;">
+
+            <button type="submit"
+                    class="btn-save"
+                    style="
+           display: inline-block;
+           padding: 6px 14px;
+           font-size: 14px;
+           color: #007bff;
+           background-color: #f0f7ff;
+           border: 1px solid #b3d7ff;
+           border-radius: 4px;
+           text-decoration: none;
+           font-family: sans-serif;
+           ">
+
+                Lưu Danh Sách
+
+            </button>
+
+        </div>
+
+        <!-- ===================== -->
+        <!-- PANEL BÊN PHẢI -->
+        <!-- ===================== -->
+
+        <div class="list-panel">
+
+            <h2>Danh Sách Sản Phẩm</h2>
+
+            <table class="table-danhmuc">
+
+                <thead>
+
+                    <tr>
+
+                        <th width="70">
+                            Chọn
+                        </th>
+
+                        <th width="90">
+                            Mã
+                        </th>
+
+                        <th>
+                            Tên sản phẩm
+                        </th>
+
+
+
+                        <th width="150">
+                            Giá
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @foreach (var item in ViewBag.listSP)
+                    {
+                        bool daGan = ViewBag.DaGan.Contains(item.MaSp);
+
+                        <tr>
+
+                            <td style="text-align:center;">
+
+                                <input type="checkbox"
+                                       class="chkSP"
+                                       name="listSanPham"
+                                       value="@item.MaSp"
+                                @(daGan ? "checked" : "") />
+
+                            </td>
+
+                            <td>
+
+                                @item.MaSp
+
+                            </td>
+
+                            <td>
+
+                                @item.TenSp
+
+                            </td>
+
+
+
+                            <td>
+
+                                @item.Gia.ToString("N0") đ
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</form>
+@section Scripts {
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+
+            Swal.fire({
+
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(TempData["Success"])',
+                timer: 1800,
+                showConfirmButton: false
+
+            });
+
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+
+            Swal.fire({
+
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(TempData["Error"])'
+
+            });
+
+        </script>
+    }
+
+    <script>
+
+        const cboKM = document.getElementById("cmbKhuyenMai");
+
+        const btnAll = document.getElementById("btnChonTatCa");
+
+        const btnNone = document.getElementById("btnBoTatCa");
+
+        const lbl = document.getElementById("lblDaChon");
+
+        const form = document.querySelector("form");
+
+
+
+        function CapNhatSoLuong() {
+
+            let tong = document.querySelectorAll(".chkSP").length;
+
+            let daChon = document.querySelectorAll(".chkSP:checked").length;
+
+            lbl.innerHTML = "Đã chọn " + daChon + " / " + tong + " sản phẩm";
+
+        }
+
+
+
+        cboKM.addEventListener("change", function () {
+
+            let value = this.value;
+
+            Swal.fire({
+
+                title: 'Đổi khuyến mãi?',
+                text: 'Các thay đổi chưa lưu sẽ bị mất.',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Đồng ý',
+                cancelButtonText: 'Hủy'
+
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+
+                    if (value == "") {
+
+                        window.location.href = "/Admin/GanSanPhamKhuyenMai";
+
+                    }
+                    else {
+
+                        window.location.href = "/Admin/GanSanPhamKhuyenMai?id=" + value;
+
+                    }
+
+                }
+                else {
+
+                    cboKM.value = "@ViewBag.MaKm";
+
+                }
+
+            });
+
+        });
+
+
+
+        btnAll.addEventListener("click", function () {
+
+            document.querySelectorAll(".chkSP").forEach(function (item) {
+
+                item.checked = true;
+
+            });
+
+            CapNhatSoLuong();
+
+        });
+
+
+
+        btnNone.addEventListener("click", function () {
+
+            document.querySelectorAll(".chkSP").forEach(function (item) {
+
+                item.checked = false;
+
+            });
+
+            CapNhatSoLuong();
+
+        });
+
+
+
+        document.querySelectorAll(".chkSP").forEach(function (item) {
+
+            item.addEventListener("change", function () {
+
+                CapNhatSoLuong();
+
+            });
+
+        });
+
+
+
+        form.addEventListener("submit", function (e) {
+
+            if (cboKM.value == "") {
+
+                e.preventDefault();
+
+                Swal.fire({
+
+                    icon: 'warning',
+                    title: 'Thông báo',
+                    text: 'Vui lòng chọn khuyến mãi.'
+
+                });
+
+            }
+
+        });
+
+
+
+        CapNhatSoLuong();
+
+    </script>
+
+}

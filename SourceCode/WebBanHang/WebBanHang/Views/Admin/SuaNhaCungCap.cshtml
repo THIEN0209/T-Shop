@@ -1,0 +1,66 @@
+﻿@model WebBanHang.Models.NhaCungCap
+
+@{
+    ViewData["Title"] = "Sửa Nhà Cung Cấp";
+}
+
+<div class="page-container">
+
+    <div class="form-panel" style="max-width:600px;margin:auto;">
+
+        <h2>Sửa Nhà Cung Cấp</h2>
+
+        <form asp-action="SuaNhaCungCap" method="post">
+
+            <div class="form-item">
+                <label>Mã Nhà Cung Cấp</label>
+
+                <input asp-for="MaNcc"
+                       class="form-control"
+                       readonly />
+
+            </div>
+
+            <div class="form-item">
+                <label>Tên Nhà Cung Cấp</label>
+
+                <input asp-for="TenNcc"
+                       class="form-control" />
+
+            </div>
+
+            <div class="form-item">
+                <label>Số Điện Thoại</label>
+
+                <input asp-for="SoDienThoai"
+                       class="form-control" />
+
+            </div>
+
+            <div class="form-item">
+                <label>Địa Chỉ</label>
+
+                <input asp-for="DiaChi"
+                       class="form-control" />
+
+            </div>
+
+            <div style="margin-top:25px;display:flex;gap:10px;">
+
+                <button type="submit" class="btn-save">
+                    Lưu Thay Đổi
+                </button>
+
+                <a asp-action="QuanLyNhaCungCap"
+                   class="btn-delete"
+                   style="text-decoration:none;">
+                    Quay Lại
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

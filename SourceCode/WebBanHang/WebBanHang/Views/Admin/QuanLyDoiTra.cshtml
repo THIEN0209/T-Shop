@@ -1,0 +1,94 @@
+﻿@model IEnumerable<WebBanHang.Models.YeuCauDoiTra>
+
+@{
+    ViewData["Title"] = "Quản Lý Đổi Trả";
+}
+
+<div class="list-panel">
+
+    <h2>Danh Sách Yêu Cầu Đổi Trả</h2>
+
+    <table class="table-danhmuc">
+
+        <thead>
+            <tr>
+                <th>Mã Đổi Trả</th>
+                <th>Mã Đơn Hàng</th>
+                <th>Lý Do</th>
+                <th>Trạng Thái</th>
+                <th>Ngày Yêu Cầu</th>
+                <th>Chức Năng</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+
+                    <td>@item.MaDoiTra</td>
+
+                    <td>@item.MaDh</td>
+
+                    <td>@item.LyDo</td>
+
+                    <td>@item.TrangThai</td>
+
+                    <td>
+                        @(item.NgayYeuCau?.ToString("dd/MM/yyyy HH:mm") ?? "Chưa có")
+                    </td>
+
+                    <td style="text-align:center;">
+
+                        <div style="display:flex;justify-content:center;gap:8px;">
+                            <form asp-action="QuanLyDoiTra" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@item.MaDoiTra" />
+                                <button type="submit" class="btn-save">
+                                    Đã xử lý
+                                </button>
+                            </form>
+                            <a asp-action="XyLyDoiTra"
+                               asp-route-id="@item.MaDh"
+                               class="btn-edit">
+                                Xử lý đổi trả
+                            </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>
+@section Scripts {
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(TempData["Error"])',
+            });
+        </script>
+    }
+}

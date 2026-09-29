@@ -1,0 +1,487 @@
+﻿.account-container {
+    width: 1200px;
+    margin: 40px auto;
+}
+
+.account-header {
+    margin-bottom: 30px;
+}
+
+    .account-header h2 {
+        font-size: 34px;
+        margin-bottom: 8px;
+        color: #222;
+    }
+
+    .account-header p {
+        color: #777;
+        font-size: 16px;
+    }
+
+.profile-box {
+    background: white;
+    border-radius: 15px;
+    padding: 35px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.08);
+    margin-bottom: 40px;
+}
+
+.profile-left {
+    display: flex;
+    align-items: center;
+}
+
+.avatar-box {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: #111;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+    font-weight: bold;
+    margin-right: 30px;
+}
+
+.profile-info h3 {
+    margin-bottom: 15px;
+    font-size: 28px;
+}
+
+.profile-info p {
+    margin: 8px 0;
+    font-size: 16px;
+    color: #444;
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 25px;
+}
+
+.menu-card {
+    text-decoration: none;
+    color: inherit;
+    background: white;
+    border-radius: 15px;
+    padding: 35px;
+    transition: .25s;
+    box-shadow: 0 8px 25px rgba(0,0,0,.08);
+    border: 1px solid #eee;
+}
+
+    .menu-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 35px rgba(0,0,0,.12);
+    }
+
+.icon {
+    font-size: 46px;
+    margin-bottom: 20px;
+}
+
+.menu-card h3 {
+    margin-bottom: 15px;
+    color: #222;
+}
+
+.menu-card p {
+    color: #777;
+    line-height: 24px;
+    min-height: 70px;
+}
+
+.btn-view {
+    display: inline-block;
+    margin-top: 15px;
+    background: #111;
+    color: white;
+    padding: 10px 22px;
+    border-radius: 8px;
+    transition: .2s;
+}
+
+.menu-card:hover .btn-view {
+    background: #444;
+}
+
+@media(max-width:992px) {
+
+    .account-container {
+        width: 95%;
+    }
+
+    .menu-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-left {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .avatar-box {
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+}
+/*=============================
+        DON HANG
+=============================*/
+
+.order-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.order-card {
+    background: #fff;
+    border-radius: 15px;
+    padding: 25px 30px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.08);
+}
+
+.order-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+    .order-top h3 {
+        margin: 0 0 8px;
+        color: #222;
+        font-size: 32px;
+    }
+
+.order-date {
+    color: #777;
+    font-size: 15px;
+}
+
+.order-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: 25px 0;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    min-width: 180px;
+}
+
+    .info-item .title {
+        color: #888;
+        font-size: 15px;
+    }
+
+    .info-item .value {
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+.money {
+    color: #d62828;
+    font-size: 20px !important;
+}
+
+.status {
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 30px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.green {
+    background: #2ecc71;
+}
+
+.red {
+    background: #e74c3c;
+}
+
+.orange {
+    background: #f39c12;
+}
+
+.blue {
+    background: #3498db;
+}
+
+.gray {
+    background: #7f8c8d;
+}
+
+.order-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+}
+
+.btn-black {
+    display: inline-block;
+    background: #111;
+    color: #fff;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    transition: .25s;
+}
+
+    .btn-black:hover {
+        background: #444;
+    }
+
+.empty-box {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.08);
+    text-align: center;
+    padding: 70px 20px;
+}
+
+.empty-icon {
+    font-size: 70px;
+    margin-bottom: 20px;
+}
+
+.empty-box h3 {
+    margin-bottom: 10px;
+}
+
+.empty-box p {
+    color: #666;
+    margin-bottom: 30px;
+}
+/*=========================
+    CHI TIẾT ĐƠN HÀNG
+=========================*/
+
+.order-detail-box {
+    background: #fff;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.08);
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 30px;
+}
+
+.detail-title {
+    display: block;
+    color: #888;
+    margin-bottom: 8px;
+    font-size: 15px;
+}
+
+.product-order-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.product-order-item {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.08);
+}
+
+.product-order-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #eee;
+}
+
+.product-order-info {
+    flex: 1;
+    margin-left: 25px;
+}
+
+    .product-order-info h3 {
+        margin-bottom: 12px;
+    }
+
+    .product-order-info p {
+        margin: 6px 0;
+        color: #666;
+    }
+
+.product-order-price {
+    font-size: 24px;
+    font-weight: bold;
+    color: #d62828;
+}
+
+.total-box {
+    background: #fff;
+    margin-top: 30px;
+    padding: 25px;
+    border-radius: 15px;
+    text-align: right;
+    box-shadow: 0 8px 25px rgba(0,0,0,.08);
+}
+
+.back-area {
+    margin-top: 25px;
+}
+
+@media(max-width:768px) {
+
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .product-order-item {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .product-order-info {
+        margin: 20px 0;
+    }
+}
+.btn-cancel {
+    display: inline-block;
+    background: #dc3545;
+    color: #fff;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    transition: .25s;
+}
+
+    .btn-cancel:hover {
+        background: #b02a37;
+    }
+/*=============================
+        YÊU THÍCH
+=============================*/
+
+.favorite-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.favorite-card {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.08);
+    display: flex;
+    align-items: center;
+    padding: 20px 25px;
+}
+
+.favorite-image {
+    width: 120px;
+    height: 120px;
+    margin-right: 25px;
+}
+
+    .favorite-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 1px solid #eee;
+    }
+
+.favorite-info {
+    flex: 1;
+}
+
+    .favorite-info h3 {
+        margin-bottom: 12px;
+        font-size: 22px;
+        color: #222;
+    }
+
+    .favorite-info p {
+        color: #666;
+        margin: 5px 0;
+    }
+
+.favorite-action {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-delete {
+    display: inline-block;
+    background: #dc3545;
+    color: #fff;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    transition: .25s;
+}
+
+    .btn-delete:hover {
+        background: #b52b38;
+    }
+/*=============================
+        DIA CHI
+=============================*/
+
+.address-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.address-card {
+    background: #fff;
+    border-radius: 15px;
+    padding: 25px 30px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.address-info {
+    flex: 1;
+}
+
+.address-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 12px;
+}
+
+    .address-header h3 {
+        margin: 0;
+        color: #222;
+    }
+
+.address-info p {
+    color: #666;
+    line-height: 28px;
+    margin: 0;
+}
+
+.address-action {
+    display: flex;
+    gap: 12px;
+}

@@ -1,0 +1,105 @@
+﻿@model WebBanHang.Models.LoaiSanPham
+
+@{
+    ViewData["Title"] = "Sửa Loại Sản Phẩm";
+}
+
+<div class="page-container">
+
+    <div class="form-panel" style="max-width:600px;margin:auto;">
+
+        <h2>Sửa Loại Sản Phẩm</h2>
+
+        <form asp-action="SuaLoaiSanPham" method="post">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-item">
+
+                <label>Mã Loại</label>
+
+                <input asp-for="MaLoai"
+                       class="form-control"
+                       readonly />
+
+                <span asp-validation-for="MaLoai" class="text-danger"></span>
+
+            </div>
+
+            <div class="form-item">
+
+                <label>Tên Loại</label>
+
+                <input asp-for="TenLoai"
+                       class="form-control" />
+
+                <span asp-validation-for="TenLoai" class="text-danger"></span>
+
+            </div>
+
+            <div class="form-item">
+
+                <label>Danh Mục</label>
+
+                <select asp-for="MaDanhMuc" class="form-control">
+
+                    @foreach (var item in ViewBag.DanhMuc)
+                    {
+                        <option value="@item.MaDanhMuc">
+                            @item.TenDanhMuc
+                        </option>
+                    }
+
+                </select>
+
+                <span asp-validation-for="MaDanhMuc" class="text-danger"></span>
+
+            </div>
+
+            <div style="display:flex;gap:12px;margin-top:25px;">
+
+                <button type="submit" class="btn-save">
+                    Lưu Thay Đổi
+                </button>
+
+                <a asp-action="QuanLyLoaiSanPham"
+                   class="btn-cancel">
+                    Quay Lại
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(TempData["Error"])',
+            });
+        </script>
+    }
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

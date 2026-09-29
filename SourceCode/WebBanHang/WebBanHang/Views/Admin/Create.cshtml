@@ -1,0 +1,154 @@
+﻿@model WebBanHang.Models.Size
+
+@{
+    ViewData["Title"] = "Quản Lý Kích Thước";
+}
+
+<div class="page-container">
+
+    <!-- KHỐI THÊM KÍCH THƯỚC -->
+    <div class="form-panel">
+
+        <h2>Thêm Kích Thước</h2>
+
+        <form asp-action="Create" method="post">
+
+            <div class="form-item">
+                <label>Mã Size</label>
+                <input asp-for="MaSize" class="form-control" placeholder="Ví dụ: S, M, L, XL..." required />
+            </div>
+
+            <div class="form-item">
+                <label>Tên Size</label>
+                <input asp-for="TenSize" class="form-control" placeholder="Ví dụ: Size S, Size M..." required />
+            </div>
+
+            <button type="submit" class="btn-save">
+                Thêm Kích Thước
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- KHỐI DANH SÁCH KÍCH THƯỚC -->
+    <div class="list-panel">
+
+        <h2>Danh Sách Kích Thước</h2>
+
+        <table class="table-danhmuc">
+
+            <thead>
+                <tr>
+                    <th>Mã Size</th>
+                    <th>Tên Size</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in ViewBag.l)
+                {
+                    <tr>
+
+                        <td>@item.MaSize</td>
+
+                        <td>@item.TenSize</td>
+
+                        <td>
+
+                            <button type="button"
+                                    class="btn-delete btnXoa"
+                                    data-id="@item.MaSize">
+                                Xóa
+                            </button>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- Form ẩn để xử lý phương thức POST an toàn kèm Token chống giả mạo -->
+<form id="deleteForm" method="post" style="display:none;">
+    @Html.AntiForgeryToken()
+</form>
+
+@section Scripts {
+
+    <!-- Thông báo Thành Công từ Backend -->
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(@TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    <!-- Thông báo Lỗi từ Backend -->
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(@TempData["Error"])'
+            });
+        </script>
+    }
+
+    <!-- Script xác nhận trước khi xóa -->
+    <script>
+        document.querySelectorAll(".btnXoa").forEach(btn => {
+
+            btn.addEventListener("click", function (e) {
+
+                e.preventDefault();
+
+                let id = this.dataset.id;
+
+                Swal.fire({
+                    title: 'Bạn có chắc?',
+                    text: 'Kích thước này sẽ bị xóa khỏi hệ thống!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Xóa',
+                    cancelButtonText: 'Hủy'
+
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+
+                        // Lấy form ẩn đã tạo ở trên
+                        let form = document.getElementById("deleteForm");
+
+                        // Cấu hình đường dẫn Action đến hàm Delete trong Controller nhận POST
+                        form.action = "/Admin/Delete?maSize=" + encodeURIComponent(id);
+
+                        // Thực hiện submit một cách an toàn
+                        form.submit();
+
+                    }
+
+                });
+
+            });
+
+        });
+    </script>
+}

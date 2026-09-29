@@ -1,0 +1,96 @@
+﻿@model WebBanHang.Models.BaiViet
+
+@{
+    ViewData["Title"] = "Sửa Bài Viết";
+}
+
+<div class="page-container">
+
+    <div class="form-panel" style="max-width:700px;margin:auto;">
+
+        <h2>Sửa Bài Viết</h2>
+
+        <form asp-action="SuaBaiViet" method="post">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input asp-for="MaBaiViet" type="hidden" />
+
+            <div class="form-item">
+
+                <label>Mã bài viết</label>
+
+                <input class="form-control"
+                       value="@Model.MaBaiViet"
+                       readonly />
+
+            </div>
+
+            <div class="form-item">
+
+                <label>Tên bài viết</label>
+
+                <input asp-for="TenBaiViet"
+                       class="form-control" />
+
+                <span asp-validation-for="TenBaiViet"
+                      class="text-danger"></span>
+
+            </div>
+
+            <div class="form-item">
+
+                <label>Link bài viết</label>
+
+                <input asp-for="LinkBaiViet"
+                       class="form-control" />
+
+                <span asp-validation-for="LinkBaiViet"
+                      class="text-danger"></span>
+
+            </div>
+
+            <div class="form-item">
+
+                <label>Loại bài viết</label>
+
+                <select asp-for="Loai"
+                        class="form-control">
+
+                    <option value="1">Bài viết chính sách</option>
+
+                    <option value="2">Bài viết sản phẩm</option>
+
+                </select>
+
+            </div>
+
+            <button type="submit"
+                    class="btn-save">
+
+                Lưu thay đổi
+
+            </button>
+
+            <a asp-action="QuanLyBaiViet"
+               class="btn-delete"
+               style="margin-left:10px;text-decoration:none;">
+
+                Quay lại
+
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+@section Scripts
+{
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}

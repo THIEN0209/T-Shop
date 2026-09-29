@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewData["Title"] = "SanPhamBanChay";
+}
+
+<h1>Sản phẩm bán chạy</h1>
+<table class="table-danhmuc">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th>Hình</th>
+            <th>Mã SP</th>
+            <th>Tên sản phẩm</th>
+            <th>Màu</th>
+            <th>Size</th>
+            <th>Đã bán</th>
+            <th>Doanh thu</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        @{
+            int stt = 1;
+        }
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>@stt</td>
+
+                <td style="width:90px">
+                    <img src="~/imageSP/@(item.MaSP)_macdinh.png"
+                         width="70"
+                         height="70"
+                         style="object-fit:cover;border-radius:8px;" />
+                </td>
+
+                <td>@item.MaSP</td>
+
+                <td>@item.TenSP</td>
+
+                <td>@item.Mau</td>
+
+                <td>@item.Size</td>
+
+                <td>@item.TongBan</td>
+
+                <td>@item.DoanhThu.ToString("N0") đ</td>
+
+            </tr>
+
+            stt++;
+        }
+
+    </tbody>
+
+</table>
+

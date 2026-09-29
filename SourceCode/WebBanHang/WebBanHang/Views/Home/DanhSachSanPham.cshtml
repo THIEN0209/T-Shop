@@ -1,0 +1,101 @@
+﻿@model IEnumerable<WebBanHang.Mymodel.SanPhamVM>
+@{
+    ViewData["Title"] = "Danh Sách Sản Phẩm";
+    var idHienTai = Context.Request.Query["id"].ToString();
+    var tieuDe = ViewBag.TieuDe ?? ViewBag.Loai?.TenLoai ?? ViewBag.DanhMuc?.TenDanhMuc;
+}
+@if (Model == null || !Model.Any() || tieuDe == null)
+{
+    <h2 class="text-center mt-5">Không tìm thấy sản phẩm nào.</h2>
+}
+else
+{
+    <div class="product-page">
+        <h2 class="page-title">
+            @(ViewBag.TieuDe ?? ViewBag.Loai?.TenLoai ?? ViewBag.DanhMuc?.TenDanhMuc)
+        </h2>
+
+        <div class="sort-bar d-flex justify-content-end gap-2 mb-3">
+            <a asp-action="DanhSachSanPham"
+               asp-route-id="@ViewBag.CurrentId"
+               asp-route-sapXep="tang"
+               class="btn-sort @(ViewBag.SapXep == "tang" ? "active" : "")">
+                Giá tăng dần <span>&#8593;</span>
+            </a>
+            <a asp-action="DanhSachSanPham"
+               asp-route-id="@ViewBag.CurrentId"
+               asp-route-sapXep="giam"
+               class="btn-sort @(ViewBag.SapXep == "giam" ? "active" : "")">
+                Giá giảm dần <span>&#8595;</span>
+            </a>
+        </div>
+
+        <div class="product-grid">
+            @foreach (var item in Model)
+            {
+                <div class="product-card">
+                    <div class="product-image">
+                        @if (!string.IsNullOrEmpty(item.TrangThai))
+                        {
+                            <span class="product-tag">@item.TrangThai</span>
+                        }
+                        <img src="~/imageSP/@(item.MaSp)_macdinh.png"
+                             asp-append-version="true"
+                             alt="@item.TenSp" />
+                    </div>
+                    <div class="product-info">
+                        <h4>@item.TenSp</h4>
+                        <p class="gender">
+                            @(item.GioiTinh == 0 ? "Nam"
+                                : item.GioiTinh == 1 ? "Nữ"
+                                : "Unisex")
+                        </p>
+                        <div class="price-box">
+                            @if (item.CoKhuyenMai)
+                            {
+                                <span class="price-discount">@($"{item.GiaDaGiam:N0} đ")</span>
+                                <span class="price-old">@($"{item.GiaGoc:N0} đ")</span>
+                            }
+                            else
+                            {
+                                @if (item.GiaGoc > 0)
+                                {
+                                    <span class="price-regular">@($"{item.GiaGoc:N0} đ")</span>
+                                }
+                                else
+                                {
+                                    <span class="price-contact">Liên hệ</span>
+                                }
+                            }
+                        </div>
+                        <a asp-action="ChiTietSanPham"
+                           asp-route-id="@item.MaSp"
+                           class="btn-detail">
+                            Mua ngay
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<style>
+    .btn-sort {
+        padding: 6px 14px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        text-decoration: none;
+        color: #333;
+        font-size: 14px;
+    }
+
+        .btn-sort:hover {
+            background-color: #f5f5f5;
+        }
+
+        .btn-sort.active {
+            background-color: #333;
+            color: #fff;
+            border-color: #333;
+        }</style>

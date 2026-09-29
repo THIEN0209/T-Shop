@@ -1,0 +1,197 @@
+﻿@using Microsoft.AspNetCore.Http
+@model IEnumerable<WebBanHang.Models.TaiKhoan>
+
+@{
+    var vaiTro = Context.Session.GetString("VaiTro");
+
+    bool laAdmin = vaiTro == "Admin";
+    bool laChuShop = vaiTro == "Chủ shop";
+    bool laNhanVien = vaiTro == "Quản lý bán hàng";
+    ViewData["Title"] = "Quản lý khách hàng";
+}
+
+<h2 class="page-title">
+    Quản lý khách hàng
+</h2>
+<form asp-controller="Admin" asp-action="QuanLyKhachHang" method="get" class="search-box-wrapper d-none d-sm-block">
+    <input type="text" name="tuKhoa" placeholder="Tìm kiếm..." class="search-input" />
+    <button type="submit" class="search-icon" style="background:none;border:none;padding:0;cursor:pointer;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+    </button>
+</form>
+<table class="order-table">
+
+    <thead>
+
+        <tr>
+
+            <th>Mã KH</th>
+
+            <th>Họ tên</th>
+
+            <th>Email</th>
+
+            <th>SĐT</th>
+
+            <th>Ngày tạo</th>
+
+            <th>Vai trò</th>
+
+            <th>Trạng thái</th>
+
+            <th width="220">Thao tác</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+
+            <tr>
+
+                <td>#@item.MaTk</td>
+
+                <td>@item.HoTen</td>
+
+                <td>@item.Email</td>
+
+                <td>@item.SoDienThoai</td>
+
+                <td>@item.NgayTao.ToString("dd/MM/yyyy")</td>
+
+                <td>
+
+                    <form asp-action="DoiVaiTro"
+                          method="post"
+                          id="form-@item.MaTk">
+
+                        <input type="hidden"
+                               name="maTk"
+                               value="@item.MaTk" />
+                        @if (laAdmin || laChuShop)
+                        {
+                            <select name="maVaiTro" class="form-select">
+
+                                <option value="2" selected="@(item.MaVaiTro == 2)">
+                                    Khách hàng
+                                </option>
+
+                                <option value="3" selected="@(item.MaVaiTro == 3)">
+                                    Nhân viên giao hàng
+                                </option>
+
+                                <option value="4" selected="@(item.MaVaiTro == 4)">
+                                    Quản lý bán hàng
+                                </option>
+
+                            </select>
+                        }else{
+                            <a>Khách hàng</a>
+                        }
+                        
+
+                    </form>
+
+                </td>
+
+                <td>
+
+                    @if (item.TrangThai == true)
+                    {
+                        <span class="badge paid">
+                            Hoạt động
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge cancel">
+                            Đã khóa
+                        </span>
+                    }
+
+                </td>
+
+                <td>
+                    @if(!laNhanVien){
+                        <button type="submit"
+                                form="form-@item.MaTk"
+                                class="btn-custom btn-confirm">
+                            Lưu
+                        </button>
+                    }
+                    
+
+                    @if (item.TrangThai == true)
+                    {
+                        <a asp-action="KhoaTaiKhoan"
+                           asp-route-id="@item.MaTk"
+                           class="btn-custom btn-confirm"
+                           onclick="return confirm('Khóa tài khoản này?')">
+
+                            Khóa
+
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-action="MoKhoaTaiKhoan"
+                           asp-route-id="@item.MaTk"
+                           class="btn-custom btn-detail">
+
+                            Mở khóa
+
+                        </a>
+                    }
+
+                    <a asp-action="DonHangKhachHang"
+                       asp-route-id="@item.MaTk"
+                       class="btn-custom btn-detail">
+
+                        Đơn hàng
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+        }
+
+    </tbody>
+
+</table>
+@section Scripts {
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(TempData["Error"])',
+            });
+        </script>
+    }
+
+
+
+}

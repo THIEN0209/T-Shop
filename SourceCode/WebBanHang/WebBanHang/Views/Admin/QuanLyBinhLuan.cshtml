@@ -1,0 +1,141 @@
+﻿@model IEnumerable<WebBanHang.Models.DanhGium>
+
+@{
+    ViewData["Title"] = "QuanLyBinhLuan";
+}
+
+<div class="page-container">
+
+    <div class="list-panel">
+
+        <h2>Danh Sách Đánh Giá</h2>
+
+        <table class="table-danhmuc">
+
+            <thead>
+
+                <tr>
+                    <th>Mã</th>
+                    <th>Sản Phẩm</th>
+                    <th>Tài Khoản</th>
+                    <th>Số Sao</th>
+                    <th>Nội Dung</th>
+                    <th>Ngày Đánh Giá</th>
+                    <th>Chức Năng</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>@item.MaDanhGia</td>
+
+                        <td>@item.MaSpNavigation?.TenSp</td>
+
+                        <td>@item.MaTkNavigation?.HoTen</td>
+
+                        <td>
+                            @for (int i = 0; i < item.SoSao; i++)
+                            {
+                                <span style="color:gold;">★</span>
+                            }
+                        </td>
+
+                        <td>
+                            @(item.NoiDung != null && item.NoiDung.Length > 60
+                                ? item.NoiDung.Substring(0, 60) + "..."
+                                : item.NoiDung)
+                        </td>
+
+                        <td>
+                            @item.NgayDanhGia.ToString("dd/MM/yyyy")
+                        </td>
+
+                        <td style="text-align:center;">
+
+                            <a href="#"
+                               class="btn-delete btnXoa"
+                               data-id="@item.MaDanhGia">
+                                Xóa
+                            </a>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(TempData["Error"])',
+            });
+        </script>
+    }
+    <script>
+
+        document.querySelectorAll(".btnXoa").forEach(btn=>{
+
+            btn.addEventListener("click",function(e){
+
+                e.preventDefault();
+
+                let id=this.dataset.id;
+                Swal.fire({
+
+                    title:'Bạn có chắc?',
+                    text:'Sản phẩm sẽ bị xóa!',
+                    icon:'warning',
+                    showCancelButton:true,
+                    confirmButtonColor:'#d33',
+                    cancelButtonColor:'#6c757d',
+                    confirmButtonText:'Xóa',
+                    cancelButtonText:'Hủy'
+
+                }).then((result)=>{
+
+                    if(result.isConfirmed){
+
+                        window.location.href="/Admin/XoaBinhLuan/"+id;
+
+                    }
+
+                });
+
+            });
+
+        });
+
+    </script>
+
+}

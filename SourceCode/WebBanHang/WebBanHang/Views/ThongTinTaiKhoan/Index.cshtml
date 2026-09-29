@@ -1,0 +1,156 @@
+﻿@model WebBanHang.Models.TaiKhoan
+
+@{
+    ViewData["Title"] = "Tài khoản của tôi";
+}
+
+<link rel="stylesheet" href="~/css/TaiKhoan.css" asp-append-version="true" />
+
+<div class="account-container">
+
+    <div class="account-header">
+        <h2>Tài khoản của tôi</h2>
+        <p>Quản lý thông tin cá nhân và theo dõi đơn hàng của bạn.</p>
+    </div>
+
+    <div class="profile-box">
+
+        <div class="profile-left">
+
+            <div class="avatar-box">
+                @Model.HoTen.Substring(0, 1).ToUpper()
+            </div>
+
+            <div class="profile-info">
+
+                <h3>@Model.HoTen</h3>
+
+                <p>
+                    <strong>Email:</strong>
+                    @Model.Email
+                </p>
+
+                <p>
+                    <strong>Số điện thoại:</strong>
+                    @(string.IsNullOrEmpty(Model.SoDienThoai) ? "Chưa cập nhật" : Model.SoDienThoai)
+                </p>
+
+                <p>
+                    <strong>Ngày tham gia:</strong>
+                    @Model.NgayTao.ToString("dd/MM/yyyy")
+                </p>
+
+            </div>
+
+        </div>
+
+        <div style="display:flex;align-items:center;">
+
+            <a asp-action="SuaThongTin"
+               style="
+                display:inline-block;
+                padding:10px 22px;
+                background:#000;
+                color:#fff;
+                text-decoration:none;
+                border-radius:6px;
+                font-weight:600;
+                transition:.3s;">
+
+                ✏️ Sửa thông tin
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="menu-grid">
+
+        <a asp-action="DonHang" class="menu-card">
+
+            <div class="icon">📦</div>
+
+            <h3>Đơn hàng của tôi</h3>
+
+            <p>
+                Theo dõi các đơn hàng đã đặt và xem chi tiết.
+            </p>
+
+            <span class="btn-view">
+                Xem ngay →
+            </span>
+
+        </a>
+
+
+        <a asp-action="YeuThich" class="menu-card">
+
+            <div class="icon">❤</div>
+
+            <h3>Sản phẩm yêu thích</h3>
+
+            <p>
+                Danh sách những sản phẩm bạn đã lưu.
+            </p>
+
+            <span class="btn-view">
+                Xem ngay →
+            </span>
+
+        </a>
+
+
+        <a asp-action="DiaChi" class="menu-card">
+
+            <div class="icon">📍</div>
+
+            <h3>Địa chỉ giao hàng</h3>
+
+            <p>
+                Quản lý địa chỉ nhận hàng mặc định.
+            </p>
+
+            <span class="btn-view">
+                Xem ngay →
+            </span>
+
+        </a>
+
+    </div>
+
+</div>
+@section Scripts {
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(@TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(@TempData["Error"])'
+            });
+        </script>
+    }
+
+
+
+}

@@ -1,0 +1,113 @@
+﻿@model IEnumerable<NhanVienGiaoHang.Models.DonHang>
+@{
+    ViewData["Title"] = "Đơn đã nhận";
+}
+
+<h5 class="mb-3">Đơn hàng đã nhận</h5>
+
+@if (!Model.Any())
+{
+    <p class="text-muted text-center mt-5">Bạn chưa nhận đơn nào.</p>
+}
+
+@foreach (var item in Model)
+{
+    var tienThu = item.TrangThaiThanhToan == "Chưa thanh toán" ? item.TongTien : 0;
+
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <h6 class="mb-0">Đơn #@item.MaDh</h6>
+                <span class="badge bg-info text-dark">@item.TrangThai</span>
+            </div>
+
+            <p class="mb-1 small text-muted">
+                <i class="bi bi-calendar"></i> @item.NgayDat.ToString("dd/MM/yyyy HH:mm")
+            </p>
+
+            <p class="mb-1">
+                <i class="bi bi-geo-alt"></i>
+                @item.MaDiaChiNavigation.DiaChiCuThe, @item.MaDiaChiNavigation.PhuongXa,
+                @item.MaDiaChiNavigation.QuanHuyen, @item.MaDiaChiNavigation.TinhThanh
+            </p>
+
+            @if (!string.IsNullOrEmpty(item.MaDiaChiNavigation.SdtNguoiNhan))
+            {
+                <p class="mb-1">
+                    <i class="bi bi-telephone"></i> @item.MaDiaChiNavigation.SdtNguoiNhan
+                </p>
+            }
+
+            <p class="mb-1">
+                <i class="bi bi-cash"></i> Tổng tiền: <strong>@item.TongTien.ToString("N0") đ</strong>
+            </p>
+
+            <p class="mb-2">
+                <i class="bi bi-credit-card"></i> Thanh toán: @item.TrangThaiThanhToan
+            </p>
+
+            @if (!string.IsNullOrEmpty(item.GhiChu))
+            {
+                <p class="mb-2 small text-muted">
+                    <i class="bi bi-chat-left-text"></i> Ghi chú: @item.GhiChu
+                </p>
+            }
+
+            <div class="alert alert-warning py-2 px-3 mb-2 d-flex justify-content-between">
+                <span>Thu tiền mặt</span>
+                <strong>@tienThu.ToString("N0") đ</strong>
+            </div>
+
+            <form asp-action="HoanThanhDon" asp-route-id="@item.MaDh" method="post" class="form-hoan-thanh">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-check2-circle"></i> Hoàn thành đơn
+                </button>
+            </form>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.form-hoan-thanh').forEach(function (form) {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'question',
+                    title: 'Xác nhận hoàn thành đơn?',
+                    text: 'Bạn có chắc chắn muốn hoàn thành đơn này không?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Xác nhận',
+                    cancelButtonText: 'Hủy'
+                }).then(function (result) {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(TempData["Error"])',
+            });
+        </script>
+    }
+}

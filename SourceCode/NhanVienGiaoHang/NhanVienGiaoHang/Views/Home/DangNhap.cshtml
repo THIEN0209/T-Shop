@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "Đăng nhập";
+}
+
+<div class="container mt-5" style="max-width: 380px;">
+    <h3 class="text-center mb-4">Đăng nhập</h3>
+
+    <form asp-controller="Home" asp-action="DangNhap" method="post">
+        <div class="mb-3">
+            <label class="form-label">Số điện thoại</label>
+            <input type="text" name="soDienThoai" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Mật khẩu</label>
+            <input type="password" name="matKhau" class="form-control" required />
+        </div>
+        <button type="submit" class="btn btn-success w-100">Đăng nhập</button>
+    </form>
+</div>
+
+@section Scripts {
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(TempData["Error"])',
+            });
+        </script>
+    }
+}

@@ -1,0 +1,192 @@
+﻿@model IEnumerable<WebBanHang.Models.TaiKhoan>
+
+@{
+    ViewData["Title"] = "Quản lý nhân viên";
+}
+
+<h2 class="page-title">
+    Quản lý nhân viên
+</h2>
+
+
+<table class="order-table">
+
+    <thead>
+
+        <tr>
+
+            <th>Mã NV</th>
+
+            <th>Họ tên</th>
+
+            <th>Email</th>
+
+            <th>SĐT</th>
+
+            <th>Vai trò</th>
+
+            <th>Ngày tạo</th>
+
+            <th>Trạng thái</th>
+
+            <th width="220">Thao tác</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+
+            <tr>
+
+                <td>#@item.MaTk</td>
+
+                <td>@item.HoTen</td>
+
+                <td>@item.Email</td>
+
+                <td>@item.SoDienThoai</td>
+
+                <td>
+
+                    <form asp-action="DoiVaiTro"
+                          method="post"
+                          id="form-@item.MaTk">
+
+                        <input type="hidden"
+                               name="maTk"
+                               value="@item.MaTk" />
+
+                        <select name="maVaiTro" class="form-select">
+
+                            @if (item.MaVaiTro == 2)
+                            {
+                                <option value="2" selected>Khách hàng</option>
+                            }
+                            else
+                            {
+                                <option value="2">Khách hàng</option>
+                            }
+
+                            @if (item.MaVaiTro == 3)
+                            {
+                                <option value="3" selected>Nhân viên giao hàng</option>
+                            }
+                            else
+                            {
+                                <option value="3">Nhân viên giao hàng</option>
+                            }
+
+                            @if (item.MaVaiTro == 4)
+                            {
+                                <option value="4" selected>Quản lý bán hàng</option>
+                            }
+                            else
+                            {
+                                <option value="4">Quản lý bán hàng</option>
+                            }
+
+                        </select>
+
+                    </form>
+
+                </td>
+
+                <td>@item.NgayTao.ToString("dd/MM/yyyy")</td>
+
+                <td>
+
+                    @if (item.TrangThai == true)
+                    {
+                        <span class="badge paid">
+                            Hoạt động
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge cancel">
+                            Đã khóa
+                        </span>
+                    }
+
+                </td>
+
+                <td>
+
+                    <button type="submit"
+                            form="form-@item.MaTk"
+                            class="btn-custom btn-confirm">
+                        Lưu
+                    </button>
+
+                    @if (item.TrangThai == true)
+                    {
+                        <a asp-action="KhoaTaiKhoan"
+                           asp-route-id="@item.MaTk"
+                           class="btn-custom btn-confirm"
+                           onclick="return confirm('Khóa tài khoản này?')">
+
+                            Khóa
+
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-action="MoKhoaTaiKhoan"
+                           asp-route-id="@item.MaTk"
+                           class="btn-custom btn-detail">
+
+                            Mở khóa
+
+                        </a>
+                    }
+
+                    <a asp-action="DonHangKhachHang"
+                       asp-route-id="@item.MaTk"
+                       class="btn-custom btn-detail">
+
+                        Đơn hàng
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+        }
+
+    </tbody>
+
+</table>
+@section Scripts {
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(TempData["Error"])',
+            });
+        </script>
+    }
+
+    
+
+}

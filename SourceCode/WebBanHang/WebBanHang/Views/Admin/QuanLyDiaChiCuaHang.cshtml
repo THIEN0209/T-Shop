@@ -1,0 +1,140 @@
+﻿
+@model IEnumerable<WebBanHang.Models.DiaChiCuaHang>
+
+@{
+    ViewData["Title"] = "Quản Lý Địa Chỉ Cửa Hàng";
+}
+
+<div class="page-container">
+
+    <div class="form-panel">
+
+        <h2>THÊM ĐỊA CHỈ</h2>
+
+        <form asp-action="ThemDiaChi" method="post">
+
+            <div class="form-item">
+
+                <label>Địa chỉ cửa hàng</label>
+
+                <textarea name="Dc"
+                          class="form-control"
+                          rows="5"
+                          required></textarea>
+
+            </div>
+
+            <button type="submit" class="btn-save">
+                Thêm Địa Chỉ
+            </button>
+
+        </form>
+
+    </div>
+
+    <div class="list-panel">
+
+        <h2>DANH SÁCH ĐỊA CHỈ</h2>
+
+        <table class="table-danhmuc">
+
+            <thead>
+
+                <tr>
+                    <th width="80">Mã</th>
+                    <th>Địa chỉ</th>
+                    <th width="100">Xóa</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>@item.MaCh</td>
+
+                        <td style="text-align:left">
+                            @item.Dc
+                        </td>
+
+                        <td>
+                            <a asp-action="XoaDiaChi"
+                               asp-route-id="@item.MaCh"
+                               class="btn-delete btnXoa">
+                                Xóa
+                            </a>
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(TempData["Success"])',
+                timer: 1800,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(TempData["Error"])'
+            });
+        </script>
+    }
+
+    <script>
+
+        document.querySelectorAll(".btnXoa").forEach(btn => {
+
+            btn.addEventListener("click", function (e) {
+
+                e.preventDefault();
+
+                let url = this.href;
+
+                Swal.fire({
+                    title: "Xóa địa chỉ?",
+                    text: "Bạn sẽ không thể khôi phục!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Xóa",
+                    cancelButtonText: "Hủy"
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+
+                });
+
+            });
+
+        });
+
+    </script>
+
+}
+```

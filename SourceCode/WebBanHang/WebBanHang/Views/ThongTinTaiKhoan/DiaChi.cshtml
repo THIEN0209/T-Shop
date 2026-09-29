@@ -1,0 +1,131 @@
+﻿@model IEnumerable<WebBanHang.Models.DiaChi>
+
+@{
+    ViewData["Title"] = "Địa chỉ giao hàng";
+}
+
+<link rel="stylesheet" href="~/css/TaiKhoan.css" asp-append-version="true" />
+
+<div class="account-container">
+
+    <div class="account-header">
+        <h2>Địa chỉ giao hàng</h2>
+        <p>Quản lý địa chỉ nhận hàng của bạn.</p>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-box">
+
+            <div class="empty-icon">
+                📍
+            </div>
+
+            <h3>Bạn chưa có địa chỉ nào</h3>
+
+            <p>
+                Hiện tại tài khoản chưa có địa chỉ giao hàng.
+            </p>
+
+        </div>
+    }
+    else
+    {
+        <div class="address-list">
+
+            @foreach (var item in Model)
+            {
+                <div class="address-card">
+
+                    <div class="address-info">
+
+                        <div class="address-header">
+
+                            <h3>
+                                @item.SdtNguoiNhan
+                            </h3>
+
+                            @if (item.MacDinh)
+                            {
+                                <span class="status green">
+                                    Mặc định
+                                </span>
+                            }
+
+                        </div>
+
+                        <p>
+
+                            @item.DiaChiCuThe,
+                            @item.PhuongXa,
+                            @item.QuanHuyen,
+                            @item.TinhThanh
+
+                        </p>
+
+                    </div>
+
+                    <div class="address-action">
+
+                        @if (!item.MacDinh)
+                        {
+                            <a asp-action="DatMacDinh"
+                               asp-route-id="@item.MaDiaChi"
+                               class="btn-black">
+
+                                Đặt mặc định
+
+                            </a>
+
+                            <a asp-action="XoaDiaChi"
+                               asp-route-id="@item.MaDiaChi"
+                               class="btn-delete"
+                               onclick="return confirm('Bạn có chắc muốn xóa địa chỉ này?');">
+
+                                Xóa
+
+                            </a>
+                        }
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+
+</div>
+@section Scripts {
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(@TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(@TempData["Error"])'
+            });
+        </script>
+    }
+
+
+
+}

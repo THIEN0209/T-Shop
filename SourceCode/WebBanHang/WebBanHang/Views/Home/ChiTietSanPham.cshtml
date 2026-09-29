@@ -1,0 +1,647 @@
+﻿@model WebBanHang.Models.SanPham
+@using WebBanHang.Mymodel
+@{
+    ViewData["Title"] = "Chi Tiết Sản Phẩm";
+}
+
+<div class="product-detail">
+
+    <!-- ẢNH -->
+    <div class="left-image">
+
+        <div class="thumb-list">
+
+            @foreach (var img in ViewBag.Images)
+            {
+                <img src="~/imageSP/@img.DuongDanAnh"
+                     class="thumb"
+                     onclick="changeImage(this)" />
+            }
+
+        </div>
+
+        <div class="main-image">
+
+            <img id="mainImage"
+                 src="~/imageSP/@($"{Model.MaSp}_macdinh.png")"
+                 onerror="this.src='/image/no-image.png'" />
+
+        </div>
+
+    </div>
+
+    <!-- THÔNG TIN -->
+    <div class="right-info">
+
+        <h2>@Model.TenSp</h2>
+        <i id="heartIcon"
+           class="@(ViewBag.DaYeuThich ? "fa-solid" : "fa-regular") fa-heart heart-icon"
+           onclick="toggleYeuThich('@Model.MaSp')">
+        </i>
+
+        <div class="price" id="price">
+            @Model.Gia.ToString("N0") đ
+        </div>
+
+        <hr />
+
+        <!-- MÀU -->
+
+        <div class="option-title">
+            Màu sắc
+        </div>
+
+        <div class="color-list">
+
+            @foreach (var item in ViewBag.Colors)
+            {
+                <button type="button"
+                        class="color-btn"
+                        data-color="@item.MaMau">
+
+                    @item.MaMauNavigation.TenMau
+
+                </button>
+            }
+
+        </div>
+
+        <!-- SIZE -->
+
+        <div class="option-title">
+            Kích thước
+        </div>
+
+        <div class="size-list" id="sizeList">
+
+        </div>
+
+        <!-- SỐ LƯỢNG -->
+
+        <div class="option-title">
+            Số lượng
+        </div>
+
+        <input type="number"
+               id="soLuong"
+               value="1"
+               min="1"
+               class="qty-input" />
+
+        <!-- TỒN KHO -->
+
+        <div id="tonKho"
+             style="margin-top:10px;
+                    font-weight:bold;
+                    color:#198754;">
+
+        </div>
+
+        <input type="hidden" id="maCtsp" />
+
+        <button type="button"
+                class="btn-buy"
+                onclick="themGio()">
+
+            Thêm vào giỏ hàng
+
+        </button>
+
+        <hr />
+
+        <h4>Mô tả sản phẩm</h4>
+
+        <p>
+            @Model.MoTa
+        </p>
+
+    </div>
+
+</div>
+
+<form id="formGio"
+      asp-controller="Home"
+      asp-action="ThemVaoGio"
+      method="post">
+
+    @Html.AntiForgeryToken()
+
+    <input type="hidden"
+           id="formMaCtsp"
+           name="maCtsp" />
+
+    <input type="hidden"
+           id="formSoLuong"
+           name="soLuong" />
+
+</form>
+<div class="rating-summary">
+    <span class="rating-score">@ViewBag.TrungBinhSoSao.ToString("0.0")</span>
+    <i class="fas fa-star"></i>
+</div>
+<a asp-action="XemDanhGia"
+   asp-route-id="@Model.MaSp"
+   class="review-link">
+
+    Xem tất cả đánh giá....
+
+</a>
+<hr />
+
+<form asp-action="ThemDanhGia" method="post">
+
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" name="maSp" value="@Model.MaSp" />
+
+    <div class="star-select">
+        @for (int i = 1; i <= 5; i++)
+        {
+            <label class="star-item">
+                <input type="radio" name="soSao" value="@i" required />
+                <i class="fas fa-star"></i>
+                @i
+            </label>
+        }
+    </div>
+
+    <textarea name="noiDung"
+              class="review-input"
+              placeholder="Nhập đánh giá của bạn..."></textarea>
+
+    <button type="submit" class="btn-buy">
+        Đăng đánh giá
+    </button>
+
+</form>
+<section class="block-best-sellers container my-5">
+
+    <div class="section-header-carousel">
+        <h2 class="section-main-title">Có thể bạn thích</h2>
+        <div class="carousel-nav-buttons">
+            <button class="nav-btn btn-prev" onclick="slideCarousel('prev')">
+                <i class="bi bi-chevron-left">&lt;</i>
+            </button>
+            <button class="nav-btn btn-next" onclick="slideCarousel('next')">
+                <i class="bi bi-chevron-right">&gt;</i>
+            </button>
+        </div>
+    </div>
+
+    <div class="products-carousel-wrapper">
+        <div class="products-grid-carousel" id="bestSellersGrid">
+            @if (ViewBag.SanPhamGoiY != null )
+            {
+                @foreach (var item in ViewBag.SanPhamGoiY)
+                {
+                    <div class="product-card">
+
+                        <div class="product-image">
+
+                            @if (!string.IsNullOrEmpty(item.TrangThai))
+                            {
+                                <span class="product-tag">@item.TrangThai</span>
+                            }
+
+                            <img src="~/imageSP/@(item.MaSp)_macdinh.png"
+                                 asp-append-version="true"
+                                 alt="@item.TenSp" />
+
+                        </div>
+
+                        <div class="product-info">
+
+                            <h4>@item.TenSp</h4>
+
+                            <p class="gender">
+                                @(item.GioiTinh == 0 ? "Nam"
+                                    : item.GioiTinh == 1 ? "Nữ"
+                                    : "Unisex")
+                            </p>
+
+                            <div class="price-box">
+                                @if (item.CoKhuyenMai)
+                                {
+                                    <span class="price-discount">@($"{item.GiaDaGiam:N0} đ")</span>
+                                    <span class="price-old">@($"{item.GiaGoc:N0} đ")</span>
+                                }
+                                else
+                                {
+                                    @if (item.GiaGoc > 0)
+                                    {
+                                        <span class="price-regular">@($"{item.GiaGoc:N0} đ")</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="price-contact">Liên hệ</span>
+                                    }
+                                }
+                            </div>
+
+                            <a asp-action="ChiTietSanPham"
+                               asp-route-id="@item.MaSp"
+                               class="btn-detail">
+                                Mua ngay
+                            </a>
+
+                        </div>
+
+                    </div>
+                }
+            }
+
+
+        </div>
+    </div>
+</section>
+@section Scripts{
+
+@if (TempData["Success"] != null)
+{
+<script>
+
+Swal.fire({
+
+    icon:'success',
+
+    title:'Thành công',
+
+    text:'@Html.Raw(TempData["Success"])',
+
+    timer:2000,
+
+    showConfirmButton:false
+
+});
+
+</script>
+}
+
+@if (TempData["Error"] != null)
+{
+<script>
+
+Swal.fire({
+
+    icon:'error',
+
+    title:'Lỗi',
+
+    text:'@Html.Raw(TempData["Error"])'
+
+});
+
+</script>
+}
+
+<script>
+
+const bienThe = @Html.Raw(ViewBag.JsonBienThe);
+
+let selectedColor = "";
+let selectedSize = "";
+
+function changeImage(img){
+
+    document.getElementById("mainImage").src = img.src;
+
+}
+
+/* ======================
+       CHỌN MÀU
+====================== */
+
+document.querySelectorAll(".color-btn").forEach(btn=>{
+
+    btn.onclick=function(){
+
+        document.querySelectorAll(".color-btn")
+        .forEach(x=>x.classList.remove("active"));
+
+        this.classList.add("active");
+
+        selectedColor=this.dataset.color;
+
+        selectedSize="";
+
+        document.getElementById("maCtsp").value="";
+
+        document.getElementById("tonKho").innerHTML="";
+
+        document.getElementById("soLuong").value=1;
+
+        // đổi ảnh
+
+        let img=document.getElementById("mainImage");
+
+        img.src="/imageSP/@Model.MaSp"+"_"+selectedColor+".png";
+
+        img.onerror=function(){
+
+            this.src="/imageSP/@Model.MaSp"+"_macdinh.png";
+
+        };
+
+        // lấy các size thuộc màu này
+
+        const ds=bienThe.filter(x=>x.maMau===selectedColor);
+
+        const sizeList=document.getElementById("sizeList");
+
+        sizeList.innerHTML="";
+
+        ds.forEach(item=>{
+
+            if(sizeList.querySelector("[data-size='"+item.maSize+"']"))
+                return;
+
+            sizeList.innerHTML+=`
+                <button
+                    type="button"
+                    class="size-btn"
+                    data-size="${item.maSize}">
+                    ${item.tenSize}
+                </button>
+            `;
+
+        });
+
+        // gắn sự kiện cho size
+
+        ganSuKienSize();
+
+    }
+
+});
+        /* ======================
+                CHỌN SIZE
+        ====================== */
+
+        function ganSuKienSize(){
+
+            document.querySelectorAll(".size-btn").forEach(btn=>{
+
+                btn.onclick=function(){
+
+                    document.querySelectorAll(".size-btn")
+                    .forEach(x=>x.classList.remove("active"));
+
+                    this.classList.add("active");
+
+                    selectedSize=this.dataset.size;
+
+                    hienThiBienThe();
+
+                }
+
+            });
+
+        }
+
+        /* ======================
+             HIỂN THỊ BIẾN THỂ
+        ====================== */
+
+        function hienThiBienThe(){
+
+            const item=bienThe.find(x=>
+
+                x.maMau===selectedColor &&
+                x.maSize===selectedSize
+
+            );
+
+            if(!item) return;
+
+            document.getElementById("maCtsp").value=item.maCtsp;
+
+            const ton=document.getElementById("tonKho");
+
+            const qty=document.getElementById("soLuong");
+
+            const btn=document.querySelector(".btn-buy");
+
+            qty.max=item.ton;
+
+            qty.value=1;
+
+            if(item.ton>0){
+
+                ton.style.color="#198754";
+
+                ton.innerHTML="Còn "+item.ton+" sản phẩm";
+
+                btn.disabled=false;
+
+            }
+            else{
+
+                ton.style.color="#dc3545";
+
+                ton.innerHTML="Hết hàng";
+
+                btn.disabled=true;
+
+            }
+
+        }
+
+        /* ======================
+             THÊM VÀO GIỎ
+        ====================== */
+
+        function themGio(){
+
+            let maCtsp=document.getElementById("maCtsp").value;
+
+            if(maCtsp==""){
+
+                Swal.fire({
+
+                    icon:'warning',
+
+                    title:'Thông báo',
+
+                    text:'Vui lòng chọn màu sắc và kích thước.'
+
+                });
+
+                return;
+
+            }
+
+            let qty=document.getElementById("soLuong");
+
+            if(Number(qty.value)>Number(qty.max)){
+
+                Swal.fire({
+
+                    icon:'warning',
+
+                    title:'Thông báo',
+
+                    text:'Số lượng vượt quá tồn kho.'
+
+                });
+
+                qty.value=qty.max;
+
+                return;
+
+            }
+
+            document.getElementById("formMaCtsp").value=maCtsp;
+
+            document.getElementById("formSoLuong").value=qty.value;
+
+            document.getElementById("formGio").submit();
+
+        }
+                function toggleYeuThich(maSp) {
+
+            $.ajax({
+                url: '/Home/ToggleYeuThich',
+                type: 'POST',
+                data: {
+                    maSp: maSp
+                },
+                success: function (rs) {
+
+                    if (rs.success) {
+
+                        const heart = document.getElementById("heartIcon");
+
+                        if (rs.daYeuThich) {
+                            heart.classList.remove("fa-regular");
+                            heart.classList.add("fa-solid");
+                        }
+                        else {
+                            heart.classList.remove("fa-solid");
+                            heart.classList.add("fa-regular");
+                        }
+
+                    }
+                    else {
+                        alert(rs.message);
+                    }
+
+                }
+            });
+
+        }
+    </script>
+
+    <style>
+
+        .product-detail {
+            display: flex;
+            gap: 60px;
+            margin: 40px auto;
+            width: 90%;
+        }
+
+        .left-image {
+            display: flex;
+            gap: 20px;
+        }
+
+        .thumb-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .thumb {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+
+            .thumb:hover {
+                border-color: #000;
+            }
+
+        .main-image img {
+            width: 500px;
+            height: 600px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .right-info {
+            flex: 1;
+        }
+
+        .price {
+            font-size: 32px;
+            color: #d70018;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .option-title {
+            font-weight: bold;
+            margin: 20px 0 10px;
+        }
+
+        .color-list,
+        .size-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .color-btn,
+        .size-btn {
+            padding: 10px 20px;
+            border: 1px solid #ccc;
+            background: white;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: .2s;
+        }
+
+            .color-btn:hover,
+            .size-btn:hover {
+                border-color: #000;
+            }
+
+            .color-btn.active,
+            .size-btn.active {
+                border: 2px solid black;
+                background: #f3f3f3;
+            }
+
+        .qty-input {
+            width: 90px;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+
+        .btn-buy {
+            width: 100%;
+            padding: 15px;
+            background: black;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+            .btn-buy:hover:not(:disabled) {
+                background: #333;
+            }
+
+            .btn-buy:disabled {
+                background: #999;
+                cursor: not-allowed;
+            }
+
+    </style>
+
+}

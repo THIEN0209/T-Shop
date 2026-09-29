@@ -1,0 +1,215 @@
+﻿@model WebBanHang.Models.DonHang
+
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng";
+
+    var list = ViewBag.ChiTiet as List<WebBanHang.Models.ChiTietDonHang>;
+}
+
+<link rel="stylesheet" href="~/css/TaiKhoan.css" asp-append-version="true" />
+
+<div class="account-container">
+
+    <div class="account-header">
+        <h2>Chi tiết đơn hàng #@Model.MaDh</h2>
+        <p>Thông tin đơn hàng của bạn.</p>
+    </div>
+
+    <div class="order-detail-box">
+
+        <div class="detail-grid">
+
+            <div>
+                <span class="detail-title">Ngày đặt</span>
+                <p>@Model.NgayDat.ToString("dd/MM/yyyy HH:mm")</p>
+            </div>
+
+            <div>
+                <span class="detail-title">Trạng thái</span>
+
+                @{
+                    string orderClass = "";
+
+                    switch (Model.TrangThai)
+                    {
+                        case "Đang xử lý":
+                            orderClass = "orange";
+                            break;
+                        case "Chờ xử lý":
+                            orderClass = "orange";
+                            break;
+
+                        case "Đang giao":
+                            orderClass = "blue";
+                            break;
+
+                        case "Hoàn thành":
+                            orderClass = "green";
+                            break;
+
+                        case "Đã hủy":
+                            orderClass = "red";
+                            break;
+
+                        default:
+                            orderClass = "gray";
+                            break;
+                    }
+                }
+
+                <span class="status @orderClass">
+                    @Model.TrangThai
+                </span>
+
+            </div>
+
+            <div>
+                <span class="detail-title">Thanh toán</span>
+
+                @if (Model.TrangThaiThanhToan == "Đã thanh toán")
+                {
+                    <span class="status green">
+                        @Model.TrangThaiThanhToan
+                    </span>
+                }
+                else
+                {
+                    <span class="status red">
+                        @Model.TrangThaiThanhToan
+                    </span>
+                }
+
+            </div>
+
+            <div>
+                <span class="detail-title">Địa chỉ nhận</span>
+
+                <p>
+                    @Model.MaDiaChiNavigation.DiaChiCuThe,
+                    @Model.MaDiaChiNavigation.PhuongXa,
+                    @Model.MaDiaChiNavigation.QuanHuyen,
+                    @Model.MaDiaChiNavigation.TinhThanh
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="product-order-list">
+
+        @foreach (var item in list)
+        {
+
+            <div class="product-order-item">
+
+                <img src="~/imageSP/@(item.MaCtspNavigation.MaSp)_@(item.MaCtspNavigation.MaMau).png"
+                     class="product-order-img" />
+
+                <div class="product-order-info">
+
+                    <h3>
+                        @item.MaCtspNavigation.MaSpNavigation.TenSp
+                    </h3>
+
+                    <p>
+                        Màu:
+                        @item.MaCtspNavigation.MaMauNavigation.TenMau
+                    </p>
+
+                    <p>
+                        Size:
+                        @item.MaCtspNavigation.MaSizeNavigation.TenSize
+                    </p>
+
+                    <p>
+                        Số lượng:
+                        @item.SoLuong
+                    </p>
+
+                </div>
+
+                <div class="product-order-price">
+
+                    @item.ThanhTien.ToString("N0") VNĐ
+
+                </div>
+
+            </div>
+
+        }
+
+    </div>
+
+    <div class="total-box">
+
+        <h2>
+
+            Tổng tiền :
+            <span class="money">
+                @Model.TongTien.ToString("N0") VNĐ
+            </span>
+
+        </h2>
+
+    </div>
+
+    <div class="back-area">
+
+        <a asp-action="DonHang"
+           class="btn-black">
+
+            ← Quay lại
+
+        </a>
+        @if (Model.TrangThai == "Hoàn thành")
+        {
+            <a asp-action="YeuCauDoiTra"
+               asp-route-id="@Model.MaDh"
+               style="
+            display:inline-block;
+            padding:12px 22px;
+            margin-right:12px;
+            background:#ff9800;
+            color:#fff;
+            text-decoration:none;
+            border-radius:6px;
+            font-weight:600;
+            font-size:15px;
+            transition:0.3s;
+            box-shadow:0 2px 6px rgba(0,0,0,.15);">
+
+                🔄 Yêu cầu đổi trả
+
+            </a>
+        }
+    </div>
+
+</div>
+@section Scripts {
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(TempData["Error"])',
+            });
+        </script>
+    }
+}

@@ -1,0 +1,246 @@
+﻿@model WebBanHang.Models.Banner
+
+@{
+    ViewData["Title"] = "Quản Lý Banner";
+}
+
+<div class="page-container">
+
+    <div class="form-panel">
+
+        <h2>Thêm Banner</h2>
+
+        <form asp-action="ThemBanner"
+              method="post"
+              enctype="multipart/form-data">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-item">
+
+                <label>Tên Banner</label>
+
+                <input asp-for="TenBanner"
+                       class="form-control" />
+
+                <span asp-validation-for="TenBanner"
+                      class="text-danger"></span>
+
+            </div>
+
+            <div class="form-item">
+
+                <label>Bài viết</label>
+
+                <select asp-for="MaBaiViet" class="form-control">
+
+                    <option value="">-- Không liên kết --</option>
+
+                    @foreach (var item in ViewBag.BaiViet)
+                    {
+                        <option value="@item.MaBaiViet">
+                            @item.TenBaiViet
+                        </option>
+                    }
+
+                </select>
+
+            </div>
+
+            <div class="form-item">
+
+                <label>Vị trí</label>
+
+                <select asp-for="ViTriBanner" class="form-control">
+
+                    <option value="Banner đầu trang">
+                        Banner đầu trang
+                    </option>
+
+                    <option value="Banner giữa trang">
+                        Banner giữa trang
+                    </option>
+
+                    <option value="Banner 50 hình 1">
+                        Banner 50 hình 1
+                    </option>
+
+                    <option value="Banner 50 hình 2">
+                        Banner 50 hình 2
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="form-item">
+
+                <label>Hình ảnh</label>
+
+                <input type="file"
+                       name="fileAnh"
+                       class="form-control"
+                       accept="image/*" />
+
+            </div>
+
+            <button type="submit"
+                    class="btn-save">
+
+                Thêm Banner
+
+            </button>
+
+        </form>
+
+    </div>
+
+    <div class="list-panel">
+
+        <h2>Danh Sách Banner</h2>
+
+        <table class="table-danhmuc">
+
+            <thead>
+
+                <tr>
+
+                    <th>Mã</th>
+                    <th>Tên Banner</th>
+                    <th>Hình ảnh</th>
+                    <th>Bài viết</th>
+                    <th>Vị trí</th>
+                    <th>Ngày tạo</th>
+                    <th width="90"></th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in ViewBag.list)
+                {
+                    <tr>
+
+                        <td>@item.MaBanner</td>
+
+                        <td>@item.TenBanner</td>
+                        <td>
+                            <img src="~/image/Banner/@(item.MaBanner).png"
+                                 alt="@item.TenBanner"
+                                 style="width:180px;height:70px;object-fit:cover;border-radius:6px;" />
+
+                        </td>
+
+                        <td>
+
+                            @(item.MaBaiVietNavigation != null
+                                ? item.MaBaiVietNavigation.TenBaiViet
+                                : "")
+
+                        </td>
+
+                        <td>@item.ViTriBanner</td>
+
+                        <td>@item.NgayTao.ToString("dd/MM/yyyy")</td>
+
+                        <td>
+
+                            <a href="#"
+                               class="btn-delete btnXoa"
+                               data-id="@item.MaBanner">
+
+                                Xóa
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+@section Scripts
+{
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(TempData["Error"])'
+            });
+        </script>
+    }
+
+    <script>
+
+        document.querySelectorAll(".btnXoa").forEach(btn => {
+
+            btn.addEventListener("click", function (e) {
+
+                e.preventDefault();
+
+                let id = this.dataset.id;
+
+                Swal.fire({
+
+                    title: 'Bạn có chắc?',
+
+                    text: 'Banner sẽ bị xóa!',
+
+                    icon: 'warning',
+
+                    showCancelButton: true,
+
+                    confirmButtonColor: '#d33',
+
+                    cancelButtonColor: '#6c757d',
+
+                    confirmButtonText: 'Xóa',
+
+                    cancelButtonText: 'Hủy'
+
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+
+                        window.location.href = "/Admin/XoaBanner/" + id;
+
+                    }
+
+                });
+
+            });
+
+        });
+
+    </script>
+
+}

@@ -1,0 +1,495 @@
+﻿@model WebBanHang.Models.KhuyenMai
+
+@{
+    ViewData["Title"] = "Sửa Khuyến Mãi";
+}
+
+<div class="page-container">
+
+    <div class="form-panel">
+
+        <h2>Sửa Khuyến Mãi</h2>
+
+        <form asp-action="SuaKhuyenMai" method="post">
+
+            <input asp-for="MaKm" type="hidden" />
+
+            <div class="form-item">
+
+                <label>Tên Khuyến Mãi</label>
+
+                <input asp-for="TenKm"
+                       class="form-control" />
+
+            </div>
+
+            <div class="form-item" id="divCodeKM">
+
+                <label>Mã Code</label>
+
+                <input asp-for="CodeKm"
+                       class="form-control" />
+
+            </div>
+
+            <div class="form-item">
+
+                <label>Loại Khuyến Mãi</label>
+
+                <select asp-for="LoaiKm"
+                        class="form-control"
+                        id="LoaiKM">
+
+                    <option value="SanPham">Sản phẩm</option>
+                    <option value="Combo">Combo</option>
+                    <option value="TongDon">Tổng đơn</option>
+                    <option value="Code">Code giảm giá</option>
+                    <option value="CaNhan">Mã giảm cá nhân</option>
+
+                </select>
+
+            </div>
+
+            <div class="form-item">
+
+                <label>Loại Giảm</label>
+
+                <select asp-for="LoaiGiam"
+                        class="form-control"
+                        id="LoaiGiam">
+
+                    <option value="%">Giảm theo %</option>
+                    <option value="Tien">Giảm theo tiền</option>
+
+                </select>
+
+            </div>
+
+            <div class="form-item">
+
+                <label>Giá Trị Giảm</label>
+
+                <input asp-for="GiaTriGiam"
+                       id="GiaTriGiam"
+                       type="number"
+                       class="form-control"
+                       min="0" />
+
+            </div>
+
+            <div class="form-item" id="divDonToiThieu">
+
+                <label>Đơn Tối Thiểu</label>
+
+                <input asp-for="DonToiThieu"
+                       type="number"
+                       class="form-control"
+                       min="0"
+                       step="1000" />
+
+            </div>
+
+            <div class="form-item">
+
+                <label>Số Lượng</label>
+
+                <input asp-for="SoLuong"
+                       type="number"
+                       class="form-control"
+                       min="1" />
+
+            </div>
+
+            <div class="form-item">
+
+                <label>Ngày Bắt Đầu</label>
+
+                <input asp-for="NgayBatDau"
+                       type="datetime-local"
+                       class="form-control" />
+
+            </div>
+
+            <div class="form-item">
+
+                <label>Ngày Kết Thúc</label>
+
+                <input asp-for="NgayKetThuc"
+                       type="datetime-local"
+                       class="form-control" />
+
+            </div>
+
+            <div class="form-item">
+
+                <label>Trạng Thái</label>
+
+                <select asp-for="TrangThai"
+                        class="form-control">
+
+                    <option value="true">Đang bật</option>
+                    <option value="false">Đang tắt</option>
+
+                </select>
+
+            </div>
+
+            <div style="display:flex;gap:10px;">
+
+                <button type="submit"
+                        class="btn-save">
+
+                    Lưu Thay Đổi
+
+                </button>
+
+                <a asp-action="QuanLyKhuyenMai"
+                   class="btn-delete"
+                   style="text-decoration:none;text-align:center;line-height:38px;">
+
+                    Quay Lại
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <div class="list-panel">
+
+        <h2>Thông Tin</h2>
+
+        <table class="table-danhmuc">
+
+            <tr>
+                <th style="width:35%;">Mục</th>
+                <th>Giá trị</th>
+            </tr>
+
+            <tr>
+                <td>Mã Khuyến Mãi</td>
+                <td>@Model.MaKm</td>
+            </tr>
+
+            <tr>
+                <td>Tên</td>
+                <td>@Model.TenKm</td>
+            </tr>
+
+            <tr>
+                <td>Loại</td>
+
+                <td>
+
+                    @switch (Model.LoaiKm)
+                    {
+                        case "SanPham":
+                            <span>Sản phẩm</span>
+                            break;
+
+                        case "Combo":
+                            <span>Combo</span>
+                            break;
+
+                        case "TongDon":
+                            <span>Tổng đơn</span>
+                            break;
+
+                        case "Code":
+                            <span>Code giảm giá</span>
+                            break;
+                    }
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>Code</td>
+
+                <td>
+
+                    @(string.IsNullOrWhiteSpace(Model.CodeKm)
+                        ? "-"
+                        : Model.CodeKm)
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>Giảm</td>
+
+                <td>
+
+                    @if (Model.LoaiGiam == "%")
+                    {
+                        @(Model.GiaTriGiam + "%")
+                    }
+                    else
+                    {
+                        @(Model.GiaTriGiam.ToString("N0") + " đ")
+                    }
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>Đơn tối thiểu</td>
+
+                <td>
+
+                    @if (Model.DonToiThieu.HasValue)
+                    {
+                        @(Model.DonToiThieu.Value.ToString("N0") + " đ")
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td>Trạng thái</td>
+
+                <td>
+
+                    @if (Model.TrangThai == true)
+                    {
+                        <span style="color:green;font-weight:bold;">
+                            Đang bật
+                        </span>
+                    }
+                    else
+                    {
+                        <span style="color:red;font-weight:bold;">
+                            Đang tắt
+                        </span>
+                    }
+
+                </td>
+
+            </tr>
+
+        </table>
+
+    </div>
+
+</div>
+@section Scripts {
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(TempData["Error"])'
+            });
+        </script>
+    }
+
+    <script>
+
+        const loaiKM = document.getElementById("LoaiKM");
+        const loaiGiam = document.getElementById("LoaiGiam");
+        const giaTri = document.getElementById("GiaTriGiam");
+
+        const divCode = document.getElementById("divCodeKM");
+        const divDon = document.getElementById("divDonToiThieu");
+
+
+
+        function CapNhatGiaoDien() {
+
+            let value = loaiKM.value;
+
+            switch (value) {
+
+                case "Code":
+
+                    divCode.style.display = "block";
+                    divDon.style.display = "block";
+
+                    break;
+
+                case "TongDon":
+
+                    divCode.style.display = "none";
+                    divDon.style.display = "block";
+
+                    break;
+
+                default:
+
+                    divCode.style.display = "none";
+                    divDon.style.display = "none";
+
+                    break;
+
+            }
+
+        }
+
+
+
+        function KiemTraLoaiGiam() {
+
+            if (loaiGiam.value == "%") {
+
+                giaTri.max = 100;
+                giaTri.placeholder = "0 - 100";
+
+                if (Number(giaTri.value) > 100) {
+
+                    giaTri.value = 100;
+
+                }
+
+            }
+            else {
+
+                giaTri.removeAttribute("max");
+                giaTri.placeholder = "Nhập số tiền";
+
+            }
+
+        }
+
+
+
+        loaiKM.addEventListener("change", CapNhatGiaoDien);
+
+        loaiGiam.addEventListener("change", KiemTraLoaiGiam);
+
+
+
+        CapNhatGiaoDien();
+
+        KiemTraLoaiGiam();
+
+
+
+
+        document.querySelector("form").addEventListener("submit", function (e) {
+
+            let batDau = document.querySelector("[name='NgayBatDau']").value;
+
+            let ketThuc = document.querySelector("[name='NgayKetThuc']").value;
+
+
+
+            if (loaiGiam.value == "%" && Number(giaTri.value) > 100) {
+
+                e.preventDefault();
+
+                Swal.fire({
+
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Giảm theo phần trăm không được vượt quá 100%.'
+
+                });
+
+                return;
+
+            }
+
+
+
+            if (batDau != "" && ketThuc != "") {
+
+                if (new Date(ketThuc) < new Date(batDau)) {
+
+                    e.preventDefault();
+
+                    Swal.fire({
+
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu.'
+
+                    });
+
+                    return;
+
+                }
+
+            }
+
+
+
+            if (loaiKM.value == "Code") {
+
+                let code = document.querySelector("[name='CodeKm']").value.trim();
+
+                if (code == "") {
+
+                    e.preventDefault();
+
+                    Swal.fire({
+
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Vui lòng nhập mã Code.'
+
+                    });
+
+                    return;
+
+                }
+
+            }
+
+
+
+            if (loaiKM.value == "TongDon" || loaiKM.value == "Code") {
+
+                let don = document.querySelector("[name='DonToiThieu']").value;
+
+                if (don == "" || Number(don) <= 0) {
+
+                    e.preventDefault();
+
+                    Swal.fire({
+
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Đơn tối thiểu phải lớn hơn 0.'
+
+                    });
+
+                    return;
+
+                }
+
+            }
+
+        });
+
+    </script>
+
+}

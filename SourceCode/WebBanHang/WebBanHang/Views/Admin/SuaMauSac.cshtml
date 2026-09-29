@@ -1,0 +1,79 @@
+﻿@model WebBanHang.Models.MauSac
+
+@{
+    ViewData["Title"] = "Sửa Màu Sắc";
+}
+
+<div class="page-container">
+
+    <div class="form-panel" style="max-width:600px;margin:auto;">
+
+        <h2>Sửa Màu Sắc</h2>
+
+        <form asp-action="SuaMauSac" method="post">
+
+            <div class="form-item">
+                <label>Mã Màu</label>
+
+                <input asp-for="MaMau"
+                       class="form-control"
+                       readonly />
+
+            </div>
+
+            <div class="form-item">
+                <label>Tên Màu</label>
+
+                <input asp-for="TenMau"
+                       class="form-control" />
+
+            </div>
+
+            <div style="margin-top:25px;display:flex;gap:10px;">
+
+                <button type="submit" class="btn-save">
+                    Lưu Thay Đổi
+                </button>
+
+                <a asp-action="QuanLyMauSac"
+                   class="btn-delete"
+                   style="text-decoration:none;">
+                    Quay Lại
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(TempData["Error"])',
+            });
+        </script>
+    }
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

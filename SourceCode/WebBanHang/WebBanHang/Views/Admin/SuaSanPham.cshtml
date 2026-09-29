@@ -1,0 +1,127 @@
+﻿@model WebBanHang.Models.SanPham
+
+@{
+    ViewData["Title"] = "Sửa Sản Phẩm";
+}
+
+<div class="page-container">
+
+    <div class="form-panel" style="max-width:600px;margin:auto;">
+
+        <h2>Sửa Sản Phẩm</h2>
+
+        <form asp-action="SuaSanPham" method="post">
+
+            <div class="form-item">
+                <label>Mã Sản Phẩm</label>
+
+                <input asp-for="MaSp"
+                       class="form-control"
+                       readonly />
+
+            </div>
+
+            <div class="form-item">
+                <label>Tên Sản Phẩm</label>
+
+                <input asp-for="TenSp"
+                       class="form-control" />
+
+            </div>
+
+            <div class="form-item">
+                <label>Loại Sản Phẩm</label>
+
+                <select asp-for="MaLoai" class="form-control">
+
+                    @foreach (var item in ViewBag.listLoai)
+                    {
+                        <option value="@item.MaLoai">
+                            @item.TenLoai
+                        </option>
+                    }
+
+                </select>
+
+            </div>
+
+            <div class="form-item">
+                <label>Giới Tính</label>
+
+                <select asp-for="GioiTinh" class="form-control">
+
+                    <option value="0">Nam</option>
+                    <option value="1">Nữ</option>
+                    <option value="2">Unisex</option>
+
+                </select>
+
+            </div>
+
+            <div class="form-item">
+                <label>Mô Tả</label>
+
+                <textarea asp-for="MoTa"
+                          class="form-control"
+                          rows="6"></textarea>
+
+            </div>
+            <div class="form-item">
+
+                <label>Giá bán</label>
+
+                <input asp-for="Gia"
+                       type="number"
+                       class="form-control"
+                       min="0"
+                       step="1000" />
+
+            </div>
+            <div style="margin-top:25px;display:flex;gap:10px;">
+
+                <button type="submit" class="btn-save">
+                    Lưu Thay Đổi
+                </button>
+
+                <a asp-action="QuanLySanPham"
+                   class="btn-delete"
+                   style="text-decoration:none;">
+                    Quay Lại
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(TempData["Error"])',
+            });
+        </script>
+    }
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,149 @@
+﻿@{
+    ViewData["Title"] = "Xử Lý Đổi Trả";
+}
+
+<div class="page-container">
+
+    <div class="form-panel">
+
+        <h2>Xử Lý Đổi Trả</h2>
+
+        <p><strong>Mã đơn hàng:</strong> @ViewBag.MaDH</p>
+
+        <div style="display:flex;gap:30px;flex-wrap:wrap;">
+
+            <!-- Nhận hàng trả -->
+            <div style="flex:1;min-width:350px;">
+
+                <h3>Nhận Hàng Trả</h3>
+
+                <form asp-action="NhanHangTra" method="post">
+
+                    <input type="hidden" name="maDH" value="@ViewBag.MaDH" />
+
+                    <div class="form-group">
+                        <label>Mã sản phẩm</label>
+                        <input type="text" name="maSP" class="form-control" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Màu</label>
+                        <select name="maMau" class="form-control" required>
+                            <option value="">-- Chọn màu --</option>
+
+                            @foreach (var mau in ViewBag.mau)
+                            {
+                                <option value="@mau.MaMau">
+                                    @mau.TenMau
+                                </option>
+                            }
+
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Size</label>
+                        <select name="maSize" class="form-control" required>
+                            <option value="">-- Chọn Size --</option>
+
+                            @foreach (var size in ViewBag.size)
+                            {
+                                <option value="@size.MaSize">
+                                    @size.TenSize
+                                </option>
+                            }
+
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-save">
+                        Nhận Hàng Trả
+                    </button>
+
+                </form>
+
+            </div>
+
+            <!-- Gửi hàng đổi -->
+            <div style="flex:1;min-width:350px;">
+
+                <h3>Gửi Hàng Đổi</h3>
+
+                <form asp-action="GuiHangDoi" method="post">
+
+                    <input type="hidden" name="maDH" value="@ViewBag.MaDH" />
+
+                    <div class="form-group">
+                        <label>Mã sản phẩm</label>
+                        <input type="text" name="maSP" class="form-control" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Màu</label>
+                        <select name="maMau" class="form-control" required>
+                            <option value="">-- Chọn màu --</option>
+
+                            @foreach (var mau in ViewBag.mau)
+                            {
+                                <option value="@mau.MaMau">
+                                    @mau.TenMau
+                                </option>
+                            }
+
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Size</label>
+                        <select name="maSize" class="form-control" required>
+                            <option value="">-- Chọn Size --</option>
+
+                            @foreach (var size in ViewBag.size)
+                            {
+                                <option value="@size.MaSize">
+                                    @size.TenSize
+                                </option>
+                            }
+
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-edit">
+                        Gửi Hàng Đổi
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+@section Scripts {
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(TempData["Error"])',
+            });
+        </script>
+    }
+}

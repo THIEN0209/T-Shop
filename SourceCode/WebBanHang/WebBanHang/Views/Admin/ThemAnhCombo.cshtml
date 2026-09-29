@@ -1,0 +1,380 @@
+﻿@{
+    ViewData["Title"] = "Thêm Ảnh Combo";
+}
+
+<div class="page-container">
+
+    <!-- ===================== -->
+    <!-- PANEL THÊM ẢNH -->
+    <!-- ===================== -->
+
+    <div class="form-panel">
+
+        <h2>Thêm Ảnh Combo</h2>
+
+        <form asp-action="ThemAnhCombo"
+              method="post"
+              enctype="multipart/form-data">
+
+            <input type="hidden"
+                   name="maCombo"
+                   value="@ViewBag.MaCombo" />
+
+            <div class="form-item">
+
+                <label>Combo</label>
+
+                <input class="form-control"
+                       value="@ViewBag.Combo.TenCombo"
+                       readonly />
+
+            </div>
+
+            <div class="form-item">
+
+                <label>Chọn Màu Sắc</label>
+
+                <select name="tenMau"
+                        class="form-control">
+
+                    <option value="macdinh">
+
+                        -- Mặc định --
+
+                    </option>
+                    <option value="MixMau">
+
+                        -- Phối màu --
+
+                    </option>
+                    @foreach (var mau in ViewBag.DanhSachMau)
+                    {
+                        <option value="@mau.MaMau">
+
+                            @mau.TenMau
+
+                        </option>
+                    }
+
+                </select>
+
+            </div>
+
+            <div class="form-item">
+
+                <label>Chọn Ảnh</label>
+
+                <input type="file"
+                       name="anhCombo"
+                       class="form-control"
+                       accept="image/*" />
+
+            </div>
+
+            <button type="submit"
+                    class="btn-save">
+
+                Thêm Ảnh
+
+            </button>
+
+            <div style="margin-top:15px;">
+
+                <a asp-action="QuanLyCombo"
+                   class="btn-delete"
+                   style="display:inline-block;text-decoration:none;">
+
+                    Quay Lại
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+
+
+
+    <!-- ===================== -->
+    <!-- DANH SÁCH ẢNH -->
+    <!-- ===================== -->
+
+    <div class="list-panel">
+
+        <h2>Danh Sách Ảnh</h2>
+
+        <table class="table-danhmuc">
+
+            <thead>
+
+                <tr>
+
+                    <th width="120">
+
+                        Ảnh
+
+                    </th>
+
+                    <th>
+
+                        Màu
+
+                    </th>
+
+                    <th width="130">
+
+                        Chức Năng
+
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (string item in ViewBag.DanhSachAnh)
+                {
+                    var ten = System.IO.Path.GetFileNameWithoutExtension(item);
+
+                    var tach = ten.Split('_');
+
+                    string maMau = tach.Length > 1 ? tach[1] : "macdinh";
+
+
+                    string tenMau;
+
+                    if (maMau == "macdinh")
+                    {
+                        tenMau = "Mặc định";
+                    }
+                    else if (maMau == "MixMau")
+                    {
+                        tenMau = "Mix màu";
+                    }
+                    else
+                    {
+                        var mau = ((List<WebBanHang.Models.MauSac>)ViewBag.DanhSachMau)
+                        .FirstOrDefault(x => x.MaMau == maMau);
+
+                        tenMau = mau != null ? mau.TenMau : maMau;
+                    }
+
+                    <tr>
+
+                        <td style="text-align:center;">
+
+                            <img src="~/image/combo/@item"
+                                 asp-append-version="true"
+                                 style="
+                                    width:90px;
+                                    height:90px;
+                                    object-fit:cover;
+                                    border-radius:8px;
+                                    border:1px solid #ddd;" />
+
+                        </td>
+
+                        <td>
+
+                            @tenMau
+
+                        </td>
+
+                        <td style="text-align:center;">
+
+                            <a href="#"
+                               class="btn-delete btnXoa"
+                               data-combo="@ViewBag.MaCombo"
+                               data-mau="@maMau">
+
+                                Xóa
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+@section Scripts {
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+
+            Swal.fire({
+
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+
+            });
+
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+
+            Swal.fire({
+
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(TempData["Error"])'
+
+            });
+
+        </script>
+    }
+
+    <script>
+
+        //=========================
+        // KIỂM TRA FORM
+        //=========================
+
+        document.querySelector("form").addEventListener("submit", function (e) {
+
+            let file = document.querySelector("input[type='file']");
+
+            if (file.files.length == 0) {
+
+                e.preventDefault();
+
+                Swal.fire({
+
+                    icon: 'warning',
+
+                    title: 'Thông báo',
+
+                    text: 'Vui lòng chọn ảnh.'
+
+                });
+
+                return;
+
+            }
+
+            let tenFile = file.files[0].name.toLowerCase();
+
+            let hopLe = [".png", ".jpg", ".jpeg", ".webp"];
+
+            let dung = false;
+
+            hopLe.forEach(function (item) {
+
+                if (tenFile.endsWith(item)) {
+
+                    dung = true;
+
+                }
+
+            });
+
+            if (!dung) {
+
+                e.preventDefault();
+
+                Swal.fire({
+
+                    icon: 'error',
+
+                    title: 'Không hợp lệ',
+
+                    text: 'Chỉ chấp nhận PNG, JPG, JPEG hoặc WEBP.'
+
+                });
+
+                return;
+
+            }
+
+            if (file.files[0].size > 5 * 1024 * 1024) {
+
+                e.preventDefault();
+
+                Swal.fire({
+
+                    icon: 'error',
+
+                    title: 'Quá lớn',
+
+                    text: 'Ảnh phải nhỏ hơn 5MB.'
+
+                });
+
+            }
+
+        });
+
+
+
+
+
+        //=========================
+        // XÓA ẢNH
+        //=========================
+
+        document.querySelectorAll(".btnXoa").forEach(btn => {
+
+            btn.addEventListener("click", function (e) {
+
+                e.preventDefault();
+
+                let maCombo = this.dataset.combo;
+
+                let maMau = this.dataset.mau;
+
+                Swal.fire({
+
+                    title: 'Bạn có chắc?',
+
+                    text: 'Ảnh sẽ bị xóa!',
+
+                    icon: 'warning',
+
+                    showCancelButton: true,
+
+                    confirmButtonColor: '#d33',
+
+                    cancelButtonColor: '#6c757d',
+
+                    confirmButtonText: 'Xóa',
+
+                    cancelButtonText: 'Hủy'
+
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+
+                        window.location.href =
+                            "/Admin/XoaAnhCombo?maCombo="
+                            + maCombo
+                            + "&tenMau="
+                            + maMau;
+
+                    }
+
+                });
+
+            });
+
+        });
+
+    </script>
+
+}

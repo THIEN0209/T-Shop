@@ -1,0 +1,218 @@
+﻿@model WebBanHang.Models.ChiTietSanPham
+
+@{
+    ViewData["Title"] = "Quản Lý Chi Tiết Sản Phẩm";
+
+}
+
+<div class="page-container">
+
+    <!-- FORM THÊM BIẾN THỂ -->
+    <div class="form-panel">
+
+        <h2>Thêm Chi Tiết Sản Phẩm </h2>
+
+        <div style="margin-bottom:20px;line-height:28px;">
+            <b>Mã sản phẩm:</b> @ViewBag.SanPham.MaSp
+            <br />
+            <b>Tên sản phẩm:</b> @ViewBag.SanPham.TenSp
+        </div>
+
+        <form asp-action="ThemChiTietSanPham" method="post">
+
+            <input type="hidden"
+                   asp-for="MaSp"
+                   value="@ViewBag.SanPham.MaSp" />
+
+            <div class="form-item">
+                <label>Màu sắc</label>
+
+                <select asp-for="MaMau" class="form-control">
+
+                    <option value="">-- Chọn màu sắc --</option>
+
+                    @foreach (var item in ViewBag.MauSac)
+                    {
+                        <option value="@item.MaMau">
+                            @item.TenMau
+                        </option>
+                    }
+
+                </select>
+            </div>
+
+            <div class="form-item">
+
+                <label>Size</label>
+
+                <select asp-for="MaSize" class="form-control">
+
+                    <option value="">-- Chọn Size --</option>
+
+                    @foreach (var item in ViewBag.Size)
+                    {
+                        <option value="@item.MaSize">
+                            @item.TenSize
+                        </option>
+                    }
+
+                </select>
+
+            </div>
+
+
+
+            <div class="form-item">
+
+                <label>Số lượng tồn</label>
+
+                <input asp-for="SoLuongTon"
+                       type="number"
+                       class="form-control"
+                       min="0" />
+
+            </div>
+
+            <button class="btn-save" type="submit">
+                Thêm
+            </button>
+
+            <a asp-action="QuanLySanPham"
+               class="btn-delete"
+               style="display:block;text-align:center;text-decoration:none;margin-top:10px;">
+                Quay Lại
+            </a>
+
+        </form>
+
+    </div>
+
+    <!-- DANH SÁCH -->
+    <div class="list-panel">
+
+        <h2>Danh Sách Chi Tiết</h2>
+
+        <table class="table-danhmuc">
+
+            <thead>
+
+                <tr>
+
+                    <th>Màu</th>
+
+                    <th>Size</th>
+
+
+                    <th>Tồn</th>
+
+                    <th>Chức năng</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in ViewBag.list)
+                {
+                    <tr>
+
+                        <td>@item.MaMauNavigation.TenMau</td>
+
+                        <td>@item.MaSizeNavigation.TenSize</td>
+
+                        
+
+                        <td>@item.SoLuongTon</td>
+
+                        <td>
+                            <a href="#"
+                               class="btn-delete btnXoa"
+                               data-id="@item.MaCtsp">
+                                Xóa
+                            </a>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(TempData["Error"])',
+            });
+        </script>
+    }
+
+    <script>
+
+        document.querySelectorAll(".btnXoa").forEach(btn => {
+
+            btn.addEventListener("click", function (e) {
+
+                e.preventDefault();
+
+                let id = this.dataset.id;
+
+                Swal.fire({
+
+                    title: 'Bạn có chắc?',
+
+                    text: 'Biến thể sẽ bị xóa!',
+
+                    icon: 'warning',
+
+                    showCancelButton: true,
+
+                    confirmButtonColor: '#d33',
+
+                    cancelButtonColor: '#6c757d',
+
+                    confirmButtonText: 'Xóa',
+
+                    cancelButtonText: 'Hủy'
+
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+
+                        window.location.href = "/Admin/XoaChiTietSanPham/" + id;
+
+                    }
+
+                });
+
+            });
+
+        });
+
+    </script>
+    
+}

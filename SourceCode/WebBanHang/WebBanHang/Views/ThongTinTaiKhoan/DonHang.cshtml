@@ -1,0 +1,195 @@
+﻿@model IEnumerable<WebBanHang.Models.DonHang>
+
+@{
+    ViewData["Title"] = "Đơn hàng của tôi";
+}
+
+<link rel="stylesheet" href="~/css/TaiKhoan.css" asp-append-version="true" />
+
+<div class="account-container">
+
+    <div class="account-header">
+        <h2>Đơn hàng của tôi</h2>
+        <p>Theo dõi trạng thái các đơn hàng đã đặt.</p>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-box">
+
+            <div class="empty-icon">
+                📦
+            </div>
+
+            <h3>Bạn chưa có đơn hàng nào</h3>
+
+            <p>
+                Hãy mua sắm để trải nghiệm các sản phẩm của TSHOP.
+            </p>
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="btn-black">
+                Mua sắm ngay
+            </a>
+
+        </div>
+    }
+    else
+    {
+        <div class="order-list">
+
+            @foreach (var item in Model)
+            {
+                <div class="order-card">
+
+                    <div class="order-top">
+
+                        <div>
+
+                            <h3>
+                                Đơn hàng #@item.MaDh
+                            </h3>
+
+                            <span class="order-date">
+                                @item.NgayDat.ToString("dd/MM/yyyy HH:mm")
+                            </span>
+
+                        </div>
+
+                        <div>
+
+                            @{
+                                string orderClass = "";
+
+                                switch (item.TrangThai)
+                                {
+                                    case "Đang xử lý":
+                                        orderClass = "orange";
+                                        break;
+                                    case "Chờ xử lý":
+                                        orderClass = "orange";
+                                        break;
+                                    case "Đang giao":
+                                        orderClass = "blue";
+                                        break;
+
+                                    case "Hoàn thành":
+                                        orderClass = "green";
+                                        break;
+
+                                    case "Đã hủy":
+                                        orderClass = "red";
+                                        break;
+
+                                    default:
+                                        orderClass = "gray";
+                                        break;
+                                }
+                            }
+
+                            <span class="status @orderClass">
+                                @item.TrangThai
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="order-body">
+
+                        <div class="info-item">
+
+                            <span class="title">
+                                Tổng tiền
+                            </span>
+
+                            <span class="value money">
+                                @item.TongTien.ToString("N0") VNĐ
+                            </span>
+
+                        </div>
+
+                        <div class="info-item">
+
+                            <span class="title">
+                                
+                            </span>
+
+                            @if (item.TrangThaiThanhToan == "Đã thanh toán")
+                            {
+                                <span class="status green">
+                                    @item.TrangThaiThanhToan
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="status red">
+                                    @item.TrangThaiThanhToan
+                                </span>
+                            }
+
+                        </div>
+
+                    </div>
+
+                    <div class="order-footer">
+                        @if (item.TrangThai == "Chờ xác nhận")
+                        {
+                            <a asp-action="HuyDon"
+                               asp-route-id="@item.MaDh"
+                               class="btn-cancel"
+                               onclick="return confirm('Bạn có chắc muốn hủy đơn hàng này không?');">
+                                Hủy đơn
+                            </a>
+                        }
+                        <a asp-action="ChiTietDonHang"
+                           asp-route-id="@item.MaDh"
+                           class="btn-black">
+
+                            Xem chi tiết
+
+                        </a>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+
+</div>
+@section Scripts {
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(@TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(@TempData["Error"])'
+            });
+        </script>
+    }
+
+
+
+}

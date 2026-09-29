@@ -1,0 +1,153 @@
+﻿@model WebBanHang.Models.DanhMuc
+
+@{
+    ViewData["Title"] = "Quản Lý Danh Mục";
+}
+
+<div class="page-container">
+
+    <div class="form-panel">
+
+        <h2>Thêm Danh Mục</h2>
+
+        <form asp-action="ThemDanhMuc" method="post">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-item">
+                <label>Mã Danh Mục</label>
+                <input asp-for="MaDanhMuc" class="form-control" />
+                <span asp-validation-for="MaDanhMuc" class="text-danger"></span>
+            </div>
+
+            <div class="form-item">
+                <label>Tên Danh Mục</label>
+                <input asp-for="TenDanhMuc" class="form-control" />
+                <span asp-validation-for="TenDanhMuc" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn-save">
+                Thêm Danh Mục
+            </button>
+
+        </form>
+
+    </div>
+
+    <div class="list-panel">
+
+        <h2>Danh Sách Danh Mục</h2>
+
+        <table class="table-danhmuc">
+            <thead>
+                <tr>
+                    <th>Mã</th>
+                    <th>Tên Danh Mục</th>
+                    <th width="100"></th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in ViewBag.list)
+                {
+                    <tr>
+                        <td>@item.MaDanhMuc</td>
+                        <td>@item.TenDanhMuc</td>
+                        <td>
+                        <td>
+                            <a asp-action="SuaDanhMuc"
+                               asp-route-id="@item.MaDanhMuc"
+                               class="btn-edit">
+                                Sửa
+                            </a>
+
+                            <a href="#"
+                               class="btn-delete btnXoa"
+                               data-id="@item.MaDanhMuc">
+                                Xóa
+                            </a>
+                        </td>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(@TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(@TempData["Error"])'
+            });
+        </script>
+    }
+
+    <script>
+
+        document.querySelectorAll(".btnXoa").forEach(btn => {
+
+            btn.addEventListener("click", function (e) {
+
+                e.preventDefault();
+
+                let id = this.dataset.id;
+
+                Swal.fire({
+
+                    title: 'Bạn có chắc?',
+                    text: 'Danh mục sẽ bị xóa!',
+                    icon: 'warning',
+
+                    showCancelButton: true,
+
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+
+                    confirmButtonText: 'Xóa',
+                    cancelButtonText: 'Hủy'
+
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+
+                        window.location.href = "/Admin/XoaDanhMuc/" + id;
+
+                    }
+
+                });
+
+            });
+
+        });
+
+    </script>
+
+}

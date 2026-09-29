@@ -1,0 +1,98 @@
+﻿@model IEnumerable<NhanVienGiaoHang.Models.DonHang>
+@{
+    ViewData["Title"] = "Đơn chờ giao";
+    var dsTinhThanh = ViewBag.DsTinhThanh as List<string>;
+    var dsQuanHuyen = ViewBag.DsQuanHuyen as List<string>;
+}
+<h5 class="mb-3">Đơn hàng chờ giao</h5>
+
+<form asp-action="Index" method="get" class="d-flex gap-2 mb-3">
+    <select name="tinhThanh" class="form-select" onchange="this.form.submit()">
+        <option value="">-- Tất cả tỉnh/thành --</option>
+        @foreach (var tt in dsTinhThanh)
+        {
+            <option value="@tt" selected="@(tt == (string)ViewBag.TinhThanhDaChon)">@tt</option>
+        }
+    </select>
+
+    <select name="quanHuyen" class="form-select" onchange="this.form.submit()">
+        <option value="">-- Tất cả quận/huyện --</option>
+        @foreach (var qh in dsQuanHuyen)
+        {
+            <option value="@qh" selected="@(qh == (string)ViewBag.QuanHuyenDaChon)">@qh</option>
+        }
+    </select>
+
+    <a asp-action="Index" class="btn btn-outline-secondary">Xóa lọc</a>
+</form>
+
+@if (!Model.Any())
+{
+    <p class="text-muted text-center mt-5">Không có đơn hàng nào.</p>
+}
+@foreach (var item in Model)
+{
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <h6 class="mb-0">Đơn #@item.MaDh</h6>
+                <span class="badge bg-warning text-dark">@item.TrangThai</span>
+            </div>
+            <p class="mb-1 small text-muted">
+                <i class="bi bi-calendar"></i> @item.NgayDat.ToString("dd/MM/yyyy HH:mm")
+            </p>
+            <p class="mb-1">
+                <i class="bi bi-geo-alt"></i>
+                @item.MaDiaChiNavigation.DiaChiCuThe, @item.MaDiaChiNavigation.PhuongXa,
+                @item.MaDiaChiNavigation.QuanHuyen, @item.MaDiaChiNavigation.TinhThanh
+            </p>
+            @if (!string.IsNullOrEmpty(item.MaDiaChiNavigation.SdtNguoiNhan))
+            {
+                <p class="mb-1">
+                    <i class="bi bi-telephone"></i> @item.MaDiaChiNavigation.SdtNguoiNhan
+                </p>
+            }
+            <p class="mb-1">
+                <i class="bi bi-cash"></i> Tổng tiền: <strong>@item.TongTien.ToString("N0") đ</strong>
+            </p>
+            <p class="mb-2">
+                <i class="bi bi-credit-card"></i> Thanh toán: @item.TrangThaiThanhToan
+            </p>
+            @if (!string.IsNullOrEmpty(item.GhiChu))
+            {
+                <p class="mb-2 small text-muted">
+                    <i class="bi bi-chat-left-text"></i> Ghi chú: @item.GhiChu
+                </p>
+            }
+            <form asp-action="NhanDonHang" asp-route-id="@item.MaDh" method="post">
+                <button type="submit" class="btn btn-success w-100">
+                    <i class="bi bi-hand-index-thumb"></i> Nhận đơn
+                </button>
+            </form>
+        </div>
+    </div>
+}
+@section Scripts {
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(TempData["Error"])',
+            });
+        </script>
+    }
+}

@@ -1,0 +1,345 @@
+﻿/* ==========================================================================
+   TRANG THANH TOÁN - Bổ sung riêng (không đụng site.css chung)
+   ========================================================================== */
+
+.address-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.btn-change-address {
+    background: transparent;
+    color: #0f5132;
+    border: 1px solid #0f5132;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+    .btn-change-address:hover {
+        background: #0f5132;
+        color: #ffffff;
+    }
+
+.item-discount-tag {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #0f5132;
+    background: #e7f3ec;
+    padding: 3px 9px;
+    border-radius: 4px;
+}
+
+.item-price {
+    text-align: right;
+}
+
+.price-old {
+    font-size: 13px;
+    color: #8d99ae;
+    text-decoration: line-through;
+    margin-bottom: 2px;
+}
+
+.price-new {
+    font-size: 18px;
+    font-weight: bold;
+    color: #d70018;
+}
+
+.code-box {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0 8px;
+}
+
+    .code-box input {
+        flex: 1;
+        padding: 12px 14px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 15px;
+        outline: none;
+        transition: border-color 0.2s ease;
+    }
+
+        .code-box input:focus {
+            border-color: #0f5132;
+            box-shadow: 0 0 0 3px rgba(15, 81, 50, 0.1);
+        }
+
+    .code-box button {
+        background: #111111;
+        color: #ffffff;
+        border: none;
+        padding: 0 22px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+
+        .code-box button:hover {
+            background: #0f5132;
+        }
+
+.code-message {
+    font-size: 13.5px;
+    margin-bottom: 15px;
+    min-height: 18px;
+}
+
+    .code-message.error {
+        color: #d90429;
+    }
+
+    .code-message.success {
+        color: #0f5132;
+    }
+
+.discount-detail {
+    margin-bottom: 15px;
+}
+
+.discount-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #0f5132;
+    padding: 6px 0;
+    border-bottom: 1px dashed #eaeded;
+}
+
+    .discount-line em {
+        color: #8d99ae;
+        font-style: normal;
+        font-size: 12px;
+        margin-left: 4px;
+    }
+
+.summary-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 15px;
+    color: #444444;
+    padding: 6px 0;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 576px) {
+    .address-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .code-box {
+        flex-direction: column;
+    }
+
+        .code-box button {
+            padding: 12px;
+        }
+
+    .price-new {
+        font-size: 16px;
+    }
+}
+/* ==========================================================================
+   TRANG CHỌN ĐỊA CHỈ - Bổ sung riêng (không đụng site.css chung)
+   ========================================================================== */
+
+.address-page-container {
+    display: flex;
+    gap: 30px;
+    margin: 40px auto;
+    max-width: 1300px;
+    align-items: flex-start;
+}
+
+.address-left {
+    width: 55%;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+}
+
+.address-right {
+    width: 45%;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+    position: sticky;
+    top: 20px;
+}
+
+    .address-left h2,
+    .address-right h2 {
+        margin-bottom: 20px;
+        font-size: 22px;
+    }
+
+.no-address {
+    color: #777777;
+    padding: 30px 0;
+    text-align: center;
+}
+
+.address-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.address-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #fafafa;
+}
+
+    .address-item:hover {
+        border-color: #0f5132;
+    }
+
+    .address-item.active {
+        border-color: #0f5132;
+        background: #e7f3ec;
+        box-shadow: 0 0 0 2px rgba(15, 81, 50, 0.15);
+    }
+
+    .address-item input[type="radio"] {
+        margin-top: 4px;
+        transform: scale(1.2);
+        accent-color: #0f5132;
+    }
+
+.address-item-content {
+    flex: 1;
+}
+
+.address-phone {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 6px;
+    font-size: 15.5px;
+}
+
+.tag-macdinh {
+    background: #0f5132;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.address-detail {
+    margin: 0;
+    color: #666666;
+    font-size: 14.5px;
+    line-height: 1.5;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+    .form-group label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 11px 14px;
+        border: 1px solid #cccccc;
+        border-radius: 8px;
+        font-size: 14.5px;
+        outline: none;
+        box-sizing: border-box;
+        transition: border-color 0.2s ease;
+    }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #0f5132;
+            box-shadow: 0 0 0 3px rgba(15, 81, 50, 0.1);
+        }
+
+    .form-group textarea {
+        resize: none;
+    }
+
+.alert-error,
+.alert-success {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.alert-error {
+    background: #fdecea;
+    color: #d90429;
+    border: 1px solid #f5c2c7;
+}
+
+.alert-success {
+    background: #e7f3ec;
+    color: #0f5132;
+    border: 1px solid #badbcc;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+    .address-page-container {
+        flex-direction: column;
+    }
+
+    .address-left,
+    .address-right {
+        width: 100%;
+    }
+
+    .address-right {
+        position: static;
+    }
+}
+
+@media (max-width: 576px) {
+    .address-item {
+        flex-direction: column;
+    }
+
+        .address-item input[type="radio"] {
+            margin-bottom: 4px;
+        }
+
+    .address-left,
+    .address-right {
+        padding: 18px;
+    }
+}

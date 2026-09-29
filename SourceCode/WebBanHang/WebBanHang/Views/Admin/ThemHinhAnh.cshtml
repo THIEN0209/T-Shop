@@ -1,0 +1,164 @@
+﻿@model IEnumerable<WebBanHang.Models.HinhAnhSanPham>
+
+@{
+    ViewData["Title"] = "ThemHinhAnh";
+}
+
+<div class="page-container">
+
+    <!-- 1. CỘT BÊN TRÁI: FORM THÊM HÌNH ẢNH MỚI -->
+    <div class="form-panel">
+
+        <h2>Thêm Hình Ảnh Mới</h2>
+        <h4 style="margin-top: -10px; margin-bottom: 20px; color: #555;">Sản phẩm: @ViewBag.MaSp - @ViewBag.TenSp</h4>
+
+        <!-- Bắt buộc có enctype="multipart/form-data" để gửi file lên Server -->
+        <form asp-action="UploadImage" method="post" enctype="multipart/form-data">
+
+            <input type="hidden" name="maSp" value="@ViewBag.MaSp" />
+
+            <div class="form-item">
+                <label>Chọn Màu Sắc</label>
+                <select name="tenMau" class="form-control">
+                    <option value="macdinh">-- Mặc định --</option>
+                    @if (ViewBag.DanhSachMau != null)
+                    {
+                        foreach (var mau in ViewBag.DanhSachMau as List<WebBanHang.Models.MauSac>)
+                        {
+                            <option value="@mau.MaMau">@mau.TenMau</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="form-item">
+                <label>Chọn File Hình Ảnh</label>
+                <input type="file" name="fileAnh" class="form-control" accept="image/*" required />
+            </div>
+
+            <button type="submit" class="btn-save">
+                Tải Lên Ảnh
+            </button>
+
+        </form>
+
+        <div style="margin-top: 20px;">
+            <a asp-controller="Admin" asp-action="QuanLyHinhAnh" style="text-decoration: none; font-size: 14px; color: #6c757d;">
+                ← Quay lại danh sách sản phẩm
+            </a>
+        </div>
+
+    </div>
+
+    <!-- 2. CỘT BÊN PHẢI: DANH SÁCH HÌNH ẢNH HIỆN CÓ -->
+    <div class="list-panel">
+
+        <h2>Danh Sách Hình Ảnh Hiện Tại</h2>
+
+        @if (Model == null || !Model.Any())
+        {
+            <p style="font-style: italic; color: #888; padding: 20px 0;">Sản phẩm này hiện chưa có hình ảnh nào trên hệ thống.</p>
+        }
+        else
+        {
+            <!-- Tận dụng class table-danhmuc có sẵn của bạn để style đồng bộ -->
+            <table class="table-danhmuc">
+                <thead>
+                    <tr>
+                        <th style="width: 150px; text-align: center;">Hình Ảnh</th>
+                        <th>Tên File Lưu Trữ</th>
+                        <th style="width: 100px; text-align: center;">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td style="text-align: center; vertical-align: middle;">
+                                <div style="width: 80px; height: 80px; display: inline-flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #ddd; background-color: #fafafa; border-radius: 4px;">
+                                    <img src="~/imageSP/@item.DuongDanAnh" alt="Ảnh SP" style="max-width: 100%; max-height: 100%; object-fit: contain;" />
+                                </div>
+                            </td>
+                            <td style="vertical-align: middle; font-family: monospace; font-size: 13px;">
+                                @item.DuongDanAnh
+                            </td>
+                            <td style="text-align: center; vertical-align: middle;">
+                                <!-- Tạo thẻ a giả lập nút xóa giống cấu trúc trang màu sắc của bạn -->
+                                <a href="#" class="btn-delete btnXoaAnh" data-id="@item.MaHa">
+                                    Xóa
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+    </div>
+
+</div>
+
+<!-- Form ẩn dùng để SUBMIT lệnh xóa bằng JavaScript lên Controller thay vì dùng thẻ a trực tiếp (vì HttpPost) -->
+<form id="formDeleteImage" asp-action="DeleteImage" method="post" style="display:none;">
+    <input type="hidden" name="maHa" id="deleteMaHa" value="" />
+</form>
+
+@section Scripts {
+
+    <!-- 1. Gọi Alert Thông báo thành công từ TempData -->
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    <!-- 2. Gọi Alert Thông báo lỗi từ TempData -->
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            // Dùng định dạng Json.Serialize giúp tự động escape (bỏ qua) mọi dấu nháy đơn, nháy kép phá chuỗi Javascript
+            var msgError = @Json.Serialize(TempData["Error"]);
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: msgError
+            });
+        </script>
+    }
+
+    <!-- 3. Xử lý sự kiện click nút XÓA bằng SweetAlert2 -->
+    <script>
+        document.querySelectorAll(".btnXoaAnh").forEach(btn => {
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                let id = this.dataset.id;
+
+                Swal.fire({
+                    title: 'Bạn có chắc chắn?',
+                    text: 'Hình ảnh sản phẩm và file vật lý sẽ bị xóa vĩnh viễn!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Xóa ngay',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Gán MaHA cần xóa vào form ẩn và submit bằng phương thức POST an toàn
+                        document.getElementById("deleteMaHa").value = id;
+                        document.getElementById("formDeleteImage").submit();
+                    }
+                });
+            });
+        });
+    </script>
+}

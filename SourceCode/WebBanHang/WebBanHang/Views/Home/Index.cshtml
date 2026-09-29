@@ -1,0 +1,294 @@
+﻿@using WebBanHang.Mymodel
+@model IEnumerable<WebBanHang.Mymodel.SanPhamVM>
+@{
+    ViewData["Title"] = "Trang chủ - Coolmate Style";
+    var dsBanChay = ViewBag.SanPhamBanChay as List<SanPhamVM>;
+}
+
+<div class="homepage-coolmate-style">
+    @{
+        var banners = ViewBag.BannerDauTrang as List<WebBanHang.Models.Banner>;
+    }
+
+    @if (banners != null && banners.Any())
+    {
+        <section class="block-hero-carousel">
+
+            <div id="heroBannerCarousel"
+                 class="carousel slide"
+                 data-bs-ride="carousel"
+                 data-bs-interval="3000">
+
+                <div class="carousel-indicators">
+
+                    @for (int i = 0; i < banners.Count; i++)
+                    {
+                        <button type="button"
+                                data-bs-target="#heroBannerCarousel"
+                                data-bs-slide-to="@i"
+                                class="@(i == 0 ? "active" : "")"
+                                aria-current="@(i == 0 ? "true" : "false")">
+                        </button>
+                    }
+
+                </div>
+
+                <div class="carousel-inner">
+
+                    @for (int i = 0; i < banners.Count; i++)
+                    {
+                        var item = banners[i];
+
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+
+                            <img src="~/image/Banner/@(item.MaBanner).png"
+                                 class="d-block w-100"
+                                 asp-append-version="true" />
+
+                            <div class="carousel-caption-custom">
+
+                                <a href="@(item.MaBaiVietNavigation == null
+    ? "#"
+    : item.MaBaiVietNavigation.Loai == 1
+        ? (item.MaBaiVietNavigation.LinkBaiViet ?? "#")
+        : Url.Action("DanhSachSanPham", "Home", new { id = item.MaBaiViet }))"
+                                   class="btn-cta-banner">
+                                    MUA NGAY
+                                </a>
+
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+
+                <button class="carousel-control-prev"
+                        type="button"
+                        data-bs-target="#heroBannerCarousel"
+                        data-bs-slide="prev">
+
+                    <span class="carousel-control-prev-icon"></span>
+
+                </button>
+
+                <button class="carousel-control-next"
+                        type="button"
+                        data-bs-target="#heroBannerCarousel"
+                        data-bs-slide="next">
+
+                    <span class="carousel-control-next-icon"></span>
+
+                </button>
+
+            </div>
+
+        </section>
+    }
+
+    <!-- KHỐI 2: Danh mục nhanh (Quick Categories) -->
+    <section class="block-quick-categories container my-5">
+        <div class="categories-grid">
+
+            @foreach (var item in ViewBag.DanhMuc)
+            {
+                <a asp-controller="Home"
+                   asp-action="DanhSachSanPham"
+                   asp-route-id="@item.MaDanhMuc"
+                   class="category-item">
+
+                    <div class="category-img-box">
+                        <img src="~/image/@(item.MaDanhMuc).png"
+                             alt="@item.TenDanhMuc"
+                             asp-append-version="true" />
+                    </div>
+
+                    <span class="category-title">
+                        @item.TenDanhMuc.ToUpper()
+                    </span>
+                </a>
+            }
+
+        </div>
+    </section>
+
+    <!-- KHỐI 3: Sản phẩm bấn chạy -->
+    <section class="block-best-sellers container my-5">
+
+        <div class="section-header-carousel">
+            <h2 class="section-main-title">Sản phẩm bán chạy</h2>
+            <div class="carousel-nav-buttons">
+                <button class="nav-btn btn-prev" onclick="slideCarousel('prev')">
+                    <i class="bi bi-chevron-left">&lt;</i>
+                </button>
+                <button class="nav-btn btn-next" onclick="slideCarousel('next')">
+                    <i class="bi bi-chevron-right">&gt;</i>
+                </button>
+            </div>
+        </div>
+
+        <div class="products-carousel-wrapper">
+            <div class="products-grid-carousel" id="bestSellersGrid">
+                @if (dsBanChay != null && dsBanChay.Any())
+                {
+                    @foreach (var item in dsBanChay)
+                    {
+                        <div class="product-card">
+
+                            <div class="product-image">
+
+                                @if (!string.IsNullOrEmpty(item.TrangThai))
+                                {
+                                    <span class="product-tag">@item.TrangThai</span>
+                                }
+
+                                <img src="~/imageSP/@(item.MaSp)_macdinh.png"
+                                     asp-append-version="true"
+                                     alt="@item.TenSp" />
+
+                            </div>
+
+                            <div class="product-info">
+
+                                <h4>@item.TenSp</h4>
+
+                                <p class="gender">
+                                    @(item.GioiTinh == 0 ? "Nam"
+                                        : item.GioiTinh == 1 ? "Nữ"
+                                        : "Unisex")
+                                </p>
+
+                                <div class="price-box">
+                                    @if (item.CoKhuyenMai)
+                                    {
+                                        <span class="price-discount">@($"{item.GiaDaGiam:N0} đ")</span>
+                                        <span class="price-old">@($"{item.GiaGoc:N0} đ")</span>
+                                    }
+                                    else
+                                    {
+                                        @if (item.GiaGoc > 0)
+                                        {
+                                            <span class="price-regular">@($"{item.GiaGoc:N0} đ")</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="price-contact">Liên hệ</span>
+                                        }
+                                    }
+                                </div>
+
+                                <a asp-action="ChiTietSanPham"
+                                   asp-route-id="@item.MaSp"
+                                   class="btn-detail">
+                                    Mua ngay
+                                </a>
+
+                            </div>
+
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted text-center w-100">Chưa có sản phẩm bán chạy nào.</p>
+                }
+            </div>
+        </div>
+    </section>
+    @* banner to *@
+    @if (ViewBag.BannerGiuaTrang != null)
+    {
+        foreach (var banner in ViewBag.BannerGiuaTrang)
+        {
+            <div class="banner-container">
+
+                <a href="@(banner.MaBaiVietNavigation?.Loai == 1
+    ? (banner.MaBaiVietNavigation?.LinkBaiViet ?? "#")
+    : Url.Action("DanhSachSanPham", "Home", new { id = banner.MaBaiViet }))">
+
+                    <img src="~/image/Banner/@(banner.MaBanner).png"
+                         asp-append-version="true"
+                         alt="@banner.TenBanner"
+                         class="banner-image" />
+
+                </a>
+
+            </div>
+        }
+    }
+    <!-- KHỐI 5: Banner đôi 50:50 (Chừa trống link hình ảnh) -->
+    <section class="block-campaign-banners container my-5">
+
+        <div class="campaign-grid">
+
+            @if (ViewBag.Banner50 != null)
+            {
+                foreach (var banner in ViewBag.Banner50)
+                {
+                    <div class="campaign-item">
+
+                        <img src="~/image/Banner/@(banner.MaBanner).png"
+                             asp-append-version="true"
+                             alt="@banner.TenBanner"
+                             class="img-placeholder-empty" />
+
+                        <div class="campaign-overlay">
+
+                            <h4>@banner.TenBanner</h4>
+
+                            <a href="@(banner.MaBaiVietNavigation == null
+    ? "#"
+    : banner.MaBaiVietNavigation.Loai == 1
+        ? (banner.MaBaiVietNavigation.LinkBaiViet ?? "#")
+        : Url.Action("DanhSachSanPham", "Home", new { id = banner.MaBaiViet }))"
+                               class="btn-campaign">
+
+                                Xem ngay
+
+                            </a>
+
+                        </div>
+
+                    </div>
+                }
+            }
+
+        </div>
+
+    </section>
+
+</div>
+
+@section Scripts {
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Thành công',
+                text: '@Html.Raw(@TempData["Success"])',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: '@Html.Raw(@TempData["Error"])'
+            });
+        </script>
+    }
+
+
+
+}

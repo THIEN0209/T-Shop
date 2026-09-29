@@ -1,0 +1,90 @@
+﻿<link rel="stylesheet" href="~/css/thanhtoan.css" />
+@{
+    ViewData["Title"] = "Chọn địa chỉ giao hàng";
+    var danhSachDiaChi = ViewBag.DanhSachDiaChi;
+    int? maDiaChiDangChon = ViewBag.MaDiaChiDangChon;
+}
+<div class="address-page-container">
+    <div class="address-left">
+        <h2>Địa chỉ của bạn</h2>
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert-error">@TempData["Error"]</div>
+        }
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert-success">@TempData["Success"]</div>
+        }
+
+        @if (danhSachDiaChi.Count == 0)
+        {
+            <p class="no-address">Bạn chưa có địa chỉ nào, hãy thêm địa chỉ mới bên phải.</p>
+        }
+        else
+        {
+            <form asp-action="ChonDiaChiGiaoHang" method="post" id="formChonDiaChi">
+                @Html.AntiForgeryToken()
+                <div class="address-list">
+                    @foreach (var dc in danhSachDiaChi)
+                    {
+                        bool dangChon = maDiaChiDangChon != null && maDiaChiDangChon == dc.MaDiaChi;
+
+                        <label class="address-item @(dangChon ? "active" : "")">
+                            <input type="radio" name="maDiaChi" value="@dc.MaDiaChi"
+                            @(dangChon ? "checked" : "") required />
+                            <div class="address-item-content">
+                                <p class="address-phone">
+                                    <strong>@dc.SdtNguoiNhan</strong>
+                                    @if (dc.MacDinh)
+                                    {
+                                        <span class="tag-macdinh">Mặc định</span>
+                                    }
+                                </p>
+                                <p class="address-detail">
+                                    @dc.DiaChiCuThe, @dc.PhuongXa, @dc.QuanHuyen, @dc.TinhThanh
+                                </p>
+                            </div>
+                        </label>
+                    }
+                </div>
+
+                <button type="submit" class="btn-order">Giao đến địa chỉ này</button>
+            </form>
+        }
+    </div>
+
+    <div class="address-right">
+        <h2>Thêm địa chỉ mới</h2>
+        <form asp-action="ThemDiaChi" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <label>Số điện thoại người nhận</label>
+                <input type="text" name="SdtNguoiNhan" placeholder="VD: 0912345678" />
+            </div>
+
+            <div class="form-group">
+                <label>Tỉnh/Thành phố</label>
+                <input type="text" name="TinhThanh" placeholder="VD: Đồng Nai" required />
+            </div>
+
+            <div class="form-group">
+                <label>Quận/Huyện</label>
+                <input type="text" name="QuanHuyen" placeholder="VD: Xuân Lộc" required />
+            </div>
+
+            <div class="form-group">
+                <label>Phường/Xã</label>
+                <input type="text" name="PhuongXa" placeholder="VD: Xuân Hiệp" required />
+            </div>
+
+            <div class="form-group">
+                <label>Địa chỉ cụ thể</label>
+                <textarea name="DiaChiCuThe" rows="3" placeholder="Số nhà, tên đường..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn-order">Lưu địa chỉ</button>
+        </form>
+    </div>
+</div>

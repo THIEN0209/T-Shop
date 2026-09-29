@@ -1,0 +1,245 @@
+﻿@using Microsoft.AspNetCore.Http
+
+@{
+    var vaiTro = Context.Session.GetString("VaiTro");
+
+    bool laAdmin = vaiTro == "Admin";
+    bool laChuShop = vaiTro == "Chủ shop";
+    bool laNhanVien = vaiTro == "Quản lý bán hàng";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title</title>
+
+    <link rel="stylesheet" href="~/css/StyleADMIN.css" asp-append-version="true" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+    <header class="admin-header">
+
+        <div class="logo">
+            <a asp-area="" asp-controller="Home" asp-action="Index">
+                <img src="~/image/logoShop.png" alt="Logo" />
+            </a>
+        </div>
+
+        <nav class="admin-menu">
+
+            @* THỐNG KÊ *@
+            @if (laAdmin || laChuShop || laNhanVien)
+            {
+                <div class="menu-section">
+                    <button type="button" class="menu-section-title">
+                        <span>Thống kê</span>
+                        <span>▼</span>
+                    </button>
+
+                    <div class="menu-links">
+                        <a asp-controller="Admin" asp-action="Index">Doanh thu</a>
+                        <a asp-controller="Admin" asp-action="SanPhamBanChay">Sản phẩm bán chạy</a>
+                    </div>
+                </div>
+            }
+
+            @* SẢN PHẨM *@
+            @if (laAdmin || laNhanVien)
+            {
+                <div class="menu-section">
+                    <button type="button" class="menu-section-title">
+                        <span>Sản Phẩm</span>
+                        <span>▼</span>
+                    </button>
+
+                    <div class="menu-links">
+                        <a asp-controller="Admin" asp-action="QuanLySanPham">Sản Phẩm</a>
+                        <a asp-controller="Admin" asp-action="QuanLyDanhMuc">Danh Mục</a>
+                        <a asp-controller="Admin" asp-action="QuanLyLoaiSanPham">Loại Sản Phẩm</a>
+                        <a asp-controller="Admin" asp-action="QuanLyMauSac">Màu Sắc</a>
+                        <a asp-controller="Admin" asp-action="Create">Size</a>
+                        <a asp-controller="Admin" asp-action="QuanLyHinhAnh">Hình Ảnh</a>
+                    </div>
+                </div>
+            }
+
+            @* ĐƠN HÀNG *@
+            @if (laAdmin || laNhanVien)
+            {
+                <div class="menu-section">
+                    <button type="button" class="menu-section-title">
+                        <span>Đơn hàng</span>
+                        <span>▼</span>
+                    </button>
+
+                    <div class="menu-links">
+                        <a asp-controller="Admin" asp-action="QuanLyDonHang">Danh Sách Đơn</a>
+                        <a asp-controller="Admin" asp-action="QuanLyDoiTra">Xử Lý Đổi Trả</a>
+                    </div>
+                </div>
+            }
+
+            @* TÀI KHOẢN *@
+            @if (laAdmin)
+            {
+                <div class="menu-section">
+                    <button type="button" class="menu-section-title">
+                        <span>Tài Khoản</span>
+                        <span>▼</span>
+                    </button>
+
+                    <div class="menu-links">
+                        <a asp-controller="Admin" asp-action="QuanLyKhachHang">Khách Hàng</a>
+                        <a asp-controller="Admin" asp-action="QuanLyNhanVien">Nhân Viên</a>
+                    </div>
+                </div>
+            }
+            else if (laChuShop)
+            {
+                <div class="menu-section">
+                    <button type="button" class="menu-section-title">
+                        <span>Tài Khoản</span>
+                        <span>▼</span>
+                    </button>
+
+                    <div class="menu-links">
+                        <a asp-controller="Admin" asp-action="QuanLyKhachHang">Khách Hàng</a>
+                        <a asp-controller="Admin" asp-action="QuanLyNhanVien">Nhân Viên</a>
+                    </div>
+                </div>
+            }
+            else if (laNhanVien)
+            {
+                <div class="menu-section">
+                    <button type="button" class="menu-section-title">
+                        <span>Tài Khoản</span>
+                        <span>▼</span>
+                    </button>
+
+                    <div class="menu-links">
+                        <a asp-controller="Admin" asp-action="QuanLyKhachHang">Khách Hàng</a>
+                    </div>
+                </div>
+            }
+
+            @* TIN TỨC *@
+            @if (laAdmin || laNhanVien)
+            {
+                <div class="menu-section">
+                    <button type="button" class="menu-section-title">
+                        <span>Tin Tức</span>
+                        <span>▼</span>
+                    </button>
+
+                    <div class="menu-links">
+                        <a asp-controller="Admin" asp-action="QuanLyBanner">Banner</a>
+                        <a asp-controller="Admin" asp-action="QuanLyBaiViet">Bài viết</a>
+                        <a asp-controller="Admin" asp-action="QuanLyDiaChiCuaHang">Địa chỉ cửa hàng</a>
+                        <a asp-controller="Admin" asp-action="QuanLyBinhLuan">Bình luận và đánh giá</a>
+                    </div>
+                </div>
+            }
+
+            @* NHẬP HÀNG *@
+            @if (laAdmin)
+            {
+                <div class="menu-section">
+                    <button type="button" class="menu-section-title">
+                        <span>Nhập hàng</span>
+                        <span>▼</span>
+                    </button>
+
+                    <div class="menu-links">
+                        <a asp-controller="Admin" asp-action="QuanLyNhaCungCap">Quản lý nhà cung cấp</a>
+                        <a asp-controller="Admin" asp-action="QuanLyNhapHang">Nhập hàng</a>
+                    </div>
+                </div>
+            }
+            else if (laChuShop)
+            {
+                <div class="menu-section">
+                    <button type="button" class="menu-section-title">
+                        <span>Nhập hàng</span>
+                        <span>▼</span>
+                    </button>
+
+                    <div class="menu-links">
+                        <a asp-controller="Admin" asp-action="QuanLyNhaCungCap">Quản lý nhà cung cấp</a>
+                    </div>
+                </div>
+            }
+            else if (laNhanVien)
+            {
+                <div class="menu-section">
+                    <button type="button" class="menu-section-title">
+                        <span>Nhập hàng</span>
+                        <span>▼</span>
+                    </button>
+
+                    <div class="menu-links">
+                        <a asp-controller="Admin" asp-action="QuanLyNhapHang">Nhập hàng</a>
+                    </div>
+                </div>
+            }
+
+            @* KHUYẾN MÃI *@
+            @if (laAdmin || laNhanVien)
+            {
+                <div class="menu-section">
+                    <button type="button" class="menu-section-title">
+                        <span>Khuyến mãi và sản phẩm KM</span>
+                        <span>▼</span>
+                    </button>
+
+                    <div class="menu-links">
+                        <a asp-controller="Admin" asp-action="QuanLyKhuyenMai">Quản lý khuyến mãi</a>
+                        <a asp-controller="Admin" asp-action="GanSanPhamKhuyenMai">Khuyến mãi cho sản phẩm</a>
+                        <a asp-controller="Admin" asp-action="GanTag">Gắn tag sản phẩm</a>
+                    </div>
+                </div>
+            }
+            <a asp-controller="Admin" asp-action="DangXuat">Đăng xuất</a>
+        </nav>
+
+    </header>
+
+    <!-- NỘI DUNG CHÍNH -->
+    <main class="content">
+        @RenderBody()
+    </main>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+
+                document.addEventListener("DOMContentLoaded", function () {
+
+            const menus = document.querySelectorAll(".menu-links");
+            const titles = document.querySelectorAll(".menu-section-title");
+
+            menus.forEach(menu => menu.style.display = "none");
+
+            titles.forEach(title => {
+
+                title.addEventListener("click", function () {
+
+                    const currentMenu = this.nextElementSibling;
+                    const isOpen = currentMenu.style.display === "block";
+
+                    menus.forEach(menu => menu.style.display = "none");
+
+                    if (!isOpen) {
+                        currentMenu.style.display = "block";
+                    }
+
+                });
+
+            });
+
+        });
+
+    </script>
+
+</body>
+</html>

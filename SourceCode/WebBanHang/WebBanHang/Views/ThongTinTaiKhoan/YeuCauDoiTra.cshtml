@@ -1,0 +1,52 @@
+﻿@model WebBanHang.Models.YeuCauDoiTra
+
+@{
+    ViewData["Title"] = "YeuCauDoiTra";
+}
+
+<div class="page-container">
+
+    <div class="form-panel">
+
+        <h2>Yêu Cầu Đổi Trả</h2>
+
+        <h3 style="margin-bottom:25px;">
+            Đơn hàng #@ViewBag.DH.MaDh
+        </h3>
+
+        <form asp-action="YeuCauDoiTra" method="post">
+
+            <input asp-for="MaDh" type="hidden" value="@ViewBag.DH.MaDh" />
+
+            <input asp-for="NgayYeuCau"
+                   type="hidden"
+                   value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss")" />
+
+            <input asp-for="TrangThai"
+                   type="hidden"
+                   value="Chờ xử lý" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-item">
+
+                <label>Lý do đổi trả</label>
+
+                <textarea asp-for="LyDo"
+                          class="form-control"
+                          rows="6"
+                          placeholder="Nhập lý do đổi trả..."></textarea>
+
+                <span asp-validation-for="LyDo" class="text-danger"></span>
+
+            </div>
+
+            <button type="submit" class="btn-save">
+                Gửi yêu cầu
+            </button>
+
+        </form>
+
+    </div>
+
+</div>

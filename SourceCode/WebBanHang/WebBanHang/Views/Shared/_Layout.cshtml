@@ -1,0 +1,422 @@
+﻿@using WebBanHang.Models
+@using Microsoft.AspNetCore.Http
+
+
+
+
+@{
+    var dsLoai = ViewBag.LoaiSP as List<LoaiSanPham> ?? new List<LoaiSanPham>();
+
+    var dsNam = dsLoai.Where(x => x.TenLoai.Contains("Nam")).ToList();
+    var dsNu = dsLoai.Where(x => x.TenLoai.Contains("Nữ")).ToList();
+    var dsTheThao = dsLoai.Where(x => x.TenLoai.Contains("Thể thao")).ToList();
+    var dsPhuKien = dsLoai.Where(x => x.MaDanhMucNavigation.TenDanhMuc.Contains("Phụ Kiện")).ToList();
+
+    var baiVietChinhSach = ViewBag.BaiVietChinhSach as List<WebBanHang.Models.BaiViet>;
+    var baiVietThuong = ViewBag.BaiVietThuong as List<WebBanHang.Models.BaiViet>;
+
+    var dsDiaChi = ViewBag.DiaChiCuaHang as List<WebBanHang.Models.DiaChiCuaHang>;
+
+    var vaiTro = Context.Session.GetString("VaiTro");
+    
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - DATN</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WebBanHang.styles.css" asp-append-version="true" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+</head>
+<body>
+    <header class="coolmate-style-header">
+        <div class="top-bar">
+            <div class="container-fluid d-flex justify-content-end align-items-center">
+                <div class="top-bar-links">
+                    <a href="#">Cửa hàng</a>
+                    <a href="#">Blog</a>
+                    <a href="#">CSKH</a>
+                    @if (Context.Session.GetInt32("MaTK") != null)
+                    {
+                        <a asp-controller="Home" asp-action="DangXuat">Đăng xuất</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Home" asp-action="DangNhap">Đăng nhập</a>
+                    }
+                    <span class="lang-select">VN <i class="bi bi-chevron-down"></i></span>
+                </div>
+            </div>
+        </div>
+
+        <nav class="main-nav">
+            <div class="container-fluid d-flex align-items-center justify-content-between">
+
+                <div class="brand-logo">
+                    <a asp-area="" asp-controller="Home" asp-action="Index">
+                        <img src="~/image/logoShop.png" alt="Logo" />
+                    </a>
+                </div>
+
+                <ul class="nav-menu-center d-none d-md-flex">
+
+                    <li>
+                        <a class="nav-link-item active"
+                           asp-controller="Home"
+                           asp-action="DanhSachSanPham"
+                           asp-route-id="moi">
+                            NEW
+                        </a>
+                    </li>
+
+                    <!-- NAM -->
+                    <li class="menu-dropdown">
+                        <a class="nav-link-item">NAM</a>
+
+                        <ul class="dropdown-menu-custom">
+
+                            <!-- ÁO -->
+                            <li class="menu-title">ÁO</li>
+                            @foreach (var item in dsNam.Where(x => x.TenLoai.Contains("Áo")))
+                            {
+                                <li>
+                                    <a asp-controller="Home"
+                                       asp-action="DanhSachSanPham"
+                                       asp-route-id="@item.MaLoai">
+                                        @item.TenLoai.Replace("Nam", "").Trim()
+                                    </a>
+                                </li>
+                            }
+
+                            <!-- QUẦN -->
+                            <li class="menu-title">QUẦN</li>
+                            @foreach (var item in dsNam.Where(x => x.TenLoai.Contains("Quần")))
+                            {
+                                <li>
+                                    <a asp-controller="Home"
+                                       asp-action="DanhSachSanPham"
+                                       asp-route-id="@item.MaLoai">
+                                        @item.TenLoai.Replace("Nam", "").Trim()
+                                    </a>
+                                </li>
+                            }
+
+                            <!-- ĐỒ LÓT -->
+                            <li class="menu-title">ĐỒ LÓT</li>
+                            @foreach (var item in dsNam.Where(x =>
+                            x.TenLoai.Contains("Boxer") ||
+                            x.TenLoai.Contains("Áo ba lỗ")))
+                            {
+                                <li>
+                                    <a asp-controller="Home"
+                                       asp-action="DanhSachSanPham"
+                                       asp-route-id="@item.MaLoai">
+                                        @item.TenLoai.Replace("Nam", "").Trim()
+                                    </a>
+                                </li>
+                            }
+
+                        </ul>
+                    </li>
+
+                    <!-- NỮ -->
+                    <li class="menu-dropdown">
+                        <a class="nav-link-item">NỮ</a>
+
+                        <ul class="dropdown-menu-custom">
+
+                            <li class="menu-title">ÁO</li>
+                            @foreach (var item in dsNu.Where(x => x.TenLoai.Contains("Áo")))
+                            {
+                                <li>
+                                    <a asp-controller="Home"
+                                       asp-action="DanhSachSanPham"
+                                       asp-route-id="@item.MaLoai">
+                                        @item.TenLoai.Replace("Nữ", "").Trim()
+                                    </a>
+                                </li>
+                            }
+
+                            <li class="menu-title">QUẦN</li>
+                            @foreach (var item in dsNu.Where(x => x.TenLoai.Contains("Quần")))
+                            {
+                                <li>
+                                    <a asp-controller="Home"
+                                       asp-action="DanhSachSanPham"
+                                       asp-route-id="@item.MaLoai">
+                                        @item.TenLoai.Replace("Nữ", "").Trim()
+                                    </a>
+                                </li>
+                            }
+
+                            <li class="menu-title">ĐỒ LÓT</li>
+                            @foreach (var item in dsNu.Where(x =>
+                            x.TenLoai.Contains("Bra") ||
+                            x.TenLoai.Contains("Áo ba lỗ")))
+                            {
+                                <li>
+                                    <a asp-controller="Home"
+                                       asp-action="DanhSachSanPham"
+                                       asp-route-id="@item.MaLoai">
+                                        @item.TenLoai.Replace("Nữ", "").Trim()
+                                    </a>
+                                </li>
+                            }
+
+                        </ul>
+                    </li>
+
+                    <!-- THỂ THAO -->
+                    <li class="menu-dropdown">
+                        <a class="nav-link-item">THỂ THAO</a>
+
+                        <ul class="dropdown-menu-custom">
+                            @foreach (var item in dsTheThao)
+                            {
+                                <li>
+                                    <a asp-controller="Home"
+                                       asp-action="DanhSachSanPham"
+                                       asp-route-id="@item.MaLoai">
+                                        @item.TenLoai.Replace("thể thao", "").Trim()
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </li>
+
+                    <!-- PHỤ KIỆN -->
+                    <li class="menu-dropdown">
+                        <a class="nav-link-item">PHỤ KIỆN</a>
+
+                        <ul class="dropdown-menu-custom">
+                            @foreach (var item in dsPhuKien)
+                            {
+                                <li>
+                                    <a asp-controller="Home"
+                                       asp-action="DanhSachSanPham"
+                                       asp-route-id="@item.MaLoai">
+                                        @item.TenLoai
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                    <!-- sale -->
+                    <li>
+                        <a class="nav-link-item sale-blink"
+                           asp-controller="Home"
+                           asp-action="DanhSachSanPham"
+                           asp-route-id="sale">
+                            SALE
+                        </a>
+                    </li>
+
+                </ul>
+
+                <div class="nav-actions-right d-flex align-items-center">
+                    <form asp-controller="Home" asp-action="DanhSachSanPham" method="get" class="search-box-wrapper d-none d-sm-block">
+                        <input type="text" name="id" placeholder="Tìm kiếm..." class="search-input" />
+                        <button type="submit" class="search-icon" style="background:none;border:none;padding:0;cursor:pointer;">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </button>
+                    </form>
+
+                    <div class="icon-group d-flex align-items-center">
+                        <a asp-area="" asp-controller="ThongTinTaiKhoan" asp-action="Index" class="icon-item" title="Tài khoản">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        </a>
+
+                        @if (vaiTro == "Admin" || vaiTro == "Chủ shop" || vaiTro == "Quản lý bán hàng")
+                        {
+                            <a asp-area="" asp-controller="Admin" asp-action="Index"
+                               class="icon-item admin-badge-btn"
+                               title="Quản trị viên">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                     stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                                <span class="admin-text-label">Quản lý</span>
+                            </a>
+                        }
+
+                        <a asp-area ="" asp-controller="Home" asp-action="GioHang" class="icon-item cart-icon-wrapper" title="Giỏ hàng">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                            <span id="cartBadge" class="cart-badge">0</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="coolmate-style-footer">
+        <div class="container">
+            <div class="footer-top-grid">
+
+                <!-- Cột 1: Thông tin liên hệ & Mạng xã hội -->
+                <div class="footer-column">
+                    <h4 class="footer-heading">TSHOP</h4>
+                    <ul class="footer-contact-list">
+                        <li>
+                            <strong>Hotline:</strong>
+                            <a href="tel:0374457745" class="highlight-link">0374457745</a>
+                        </li>
+                        <li>
+                            <strong>Email:</strong>
+                            <a href="mailto:dh52004489@student.stu.edu.vn">dh52004489@student.stu.edu.vn</a>
+                        </li>
+                    </ul>
+                    <!-- Mạng xã hội -->
+                    <div class="footer-socials">
+                        <a href="#" title="Facebook">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                        </a>
+                        <a href="#" title="Zalo" class="zalo-icon-text">
+                            <span>Zalo</span>
+                        </a>
+                        <a href="#" title="Instagram">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                        </a>
+                        <a href="#" title="TikTok">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+                        </a>
+                        <a href="#" title="YouTube">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Cột 2: Chính sách mua hàng -->
+                <div class="footer-column">
+                    <h4 class="footer-heading">Chính sách & Tuyển dụng</h4>
+
+                    <ul class="footer-links">
+
+                        @foreach (var item in baiVietChinhSach)
+                        {
+                            <li>
+                                <a href="@(item.Loai == 1
+                    ? item.LinkBaiViet
+                    : Url.Action("DanhSachSanPham", "Home", new { id = item.MaBaiViet }))"
+                                @(item.Loai == 1 ? "target=\"_blank\"" : "")>
+
+                                    @item.TenBaiViet
+
+                                </a>
+                            </li>
+                        }
+
+                    </ul>
+                </div>
+                <!-- Cột 3: Khám phá -->
+                <div class="footer-column">
+                    <h4 class="footer-heading">Khám phá</h4>
+
+                    <ul class="footer-links">
+
+                        @foreach (var item in baiVietThuong)
+                        {
+                            <li>
+                                <a href="@(item.Loai == 1
+                    ? item.LinkBaiViet
+                    : Url.Action("DanhSachSanPham", "Home", new { id = item.MaBaiViet }))"
+                                @(item.Loai == 1 ? "target=\"_blank\"" : "")>
+
+                                    @item.TenBaiViet
+
+                                </a>
+                            </li>
+                        }
+
+                    </ul>
+                </div>
+
+                <!-- Cột 4: Hệ thống cửa hàng -->
+                <div class="footer-column">
+
+                    <h4 class="footer-heading">Hệ thống cửa hàng</h4>
+
+                    <ul class="footer-store-list">
+
+                        @foreach (var item in dsDiaChi)
+                        {
+                            <li>
+                                
+                                @item.Dc
+                            </li>
+                        }
+
+                    </ul>
+
+                </div>
+
+            </div>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            CapNhatGioHang();
+
+        });
+
+        function CapNhatGioHang() {
+
+            $.ajax({
+
+                url: '/Home/LaySoLuongGio',
+
+                type: 'GET',
+
+                success: function (rs) {
+
+                    $("#cartBadge").text(rs.cartCount);
+
+                }
+
+            });
+
+        }
+
+
+
+    </script>
+    <script>
+        function slideCarousel(direction) {
+            const grid = document.getElementById("bestSellersGrid");
+            if (grid) {
+                // Lấy độ rộng thực tế của một cột (bao gồm cả khoảng trống gap)
+                const cardWidth = grid.querySelector(".product-card").offsetWidth;
+                const gap = 24; // Phải trùng khớp với gap trong CSS
+                const scrollAmount = cardWidth + gap;
+
+                if (direction === 'prev') {
+                    grid.scrollLeft -= scrollAmount;
+                } else {
+                    grid.scrollLeft += scrollAmount;
+                }
+            }
+        }
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

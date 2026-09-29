@@ -1,0 +1,73 @@
+﻿@model IEnumerable<WebBanHang.Models.ChiTietPhieuNhap>
+
+@{
+    ViewData["Title"] = "Chi Tiết Phiếu Nhập";
+}
+
+<div class="list-panel">
+
+    
+
+        <h2>Chi Tiết Phiếu Nhập</h2>
+
+        <table class="table-danhmuc">
+
+            <thead>
+                <tr>
+                    <th>Mã CTPN</th>
+                    <th>Sản Phẩm</th>
+                    <th>Màu</th>
+                    <th>Size</th>
+                    <th>Số Lượng</th>
+                    <th>Đơn Giá Nhập</th>
+                    <th>Thành Tiền</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>@item.MaCtpn</td>
+
+                        <td>@item.MaCtspNavigation.MaSpNavigation.TenSp</td>
+
+                        <td>@item.MaCtspNavigation.MaMauNavigation.TenMau</td>
+
+                        <td>@item.MaCtspNavigation.MaSizeNavigation.TenSize</td>
+
+                        <td>@item.SoLuong</td>
+
+                        <td>@string.Format("{0:N0} đ", item.DonGiaNhap)</td>
+
+                        <td>
+                            @string.Format("{0:N0} đ", item.SoLuong * item.DonGiaNhap)
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+        <div style="margin-top:25px;display:flex;justify-content:space-between;align-items:center;">
+
+            <h3>
+                Tổng Tiền:
+                @string.Format("{0:N0} đ", Model.Sum(x => x.SoLuong * x.DonGiaNhap))
+            </h3>
+
+            
+
+        </div>
+    <a asp-action="QuanLyNhapHang"
+       class="btn-delete"
+       style="text-decoration:none;">
+        Quay Lại
+    </a>
+    
+
+</div>

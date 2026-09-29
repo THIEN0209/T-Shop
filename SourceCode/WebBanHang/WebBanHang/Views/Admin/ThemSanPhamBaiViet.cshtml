@@ -1,0 +1,210 @@
+﻿@{
+    ViewData["Title"] = "Thêm Sản Phẩm Cho Bài Viết";
+
+    var baiViet = ViewBag.BaiViet as WebBanHang.Models.BaiViet;
+
+    List<string> daThem = ViewBag.DaThem;
+
+    List<WebBanHang.Models.SanPham> dsSanPham = ViewBag.SanPham;
+}
+
+<div class="page-container">
+
+    <div class="form-panel" style="width:350px;">
+
+        <h2>Thông Tin Bài Viết</h2>
+
+        <div class="form-item">
+
+            <label>Mã bài viết</label>
+
+            <input class="form-control"
+                   value="@baiViet.MaBaiViet"
+                   readonly />
+
+        </div>
+
+        <div class="form-item">
+
+            <label>Tên bài viết</label>
+
+            <input class="form-control"
+                   value="@baiViet.TenBaiViet"
+                   readonly />
+
+        </div>
+
+        <div class="form-item">
+
+            <label>Loại</label>
+
+            <input class="form-control"
+                   value="@(baiViet.Loai==1?"Bài viết chính sách":"Bài viết sản phẩm")"
+                   readonly />
+
+        </div>
+        <div style="margin-bottom:15px;">
+
+            <button type="button"
+                    class="btn-save"
+                    id="btnChonTatCa">
+
+                Chọn tất cả
+
+            </button>
+
+            <button type="button"
+                    class="btn-delete"
+                    id="btnBoChon"
+                    style="margin-left:10px;">
+
+                Bỏ chọn tất cả
+
+            </button>
+
+        </div>
+    </div>
+
+    <div class="list-panel">
+
+        <h2>Danh Sách Sản Phẩm</h2>
+
+        <form asp-action="ThemSanPhamBaiViet"
+              method="post">
+
+            <input type="hidden"
+                   name="MaBaiViet"
+                   value="@baiViet.MaBaiViet" />
+
+            <table class="table-danhmuc">
+
+                <thead>
+
+                    <tr>
+
+                        <th width="70">Chọn</th>
+
+                        <th>Mã SP</th>
+
+                        <th>Tên sản phẩm</th>
+
+                        <th>Giới tính</th>
+
+                        <th>Giá</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @foreach (var sp in dsSanPham)
+                    {
+                        <tr>
+
+                            <td>
+
+                                <input type="checkbox"
+                                       name="MaSP"
+                                       value="@sp.MaSp"
+                                @(daThem.Contains(sp.MaSp) ? "checked" : "") />
+
+                            </td>
+
+                            <td>@sp.MaSp</td>
+
+                            <td>@sp.TenSp</td>
+
+                            <td>@sp.GioiTinh</td>
+
+                            <td>@String.Format("{0:N0}", sp.Gia) đ</td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+            <br />
+
+            <button class="btn-save"
+                    type="submit">
+
+                Lưu danh sách sản phẩm
+
+            </button>
+
+            <a asp-action="QuanLyBaiViet"
+               class="btn-delete"
+               style="text-decoration:none;margin-left:10px;">
+
+                Quay lại
+
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+@section Scripts
+{
+
+    @if (TempData["Success"] != null)
+    {
+        <script>
+
+            Swal.fire({
+
+                icon: 'success',
+
+                title: 'Thành công',
+
+                text: '@Html.Raw(TempData["Success"])',
+
+                timer:2000,
+
+                showConfirmButton:false
+
+            });
+
+        </script>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <script>
+
+            Swal.fire({
+
+                icon:'error',
+
+                title:'Lỗi',
+
+                text:'@Html.Raw(TempData["Error"])'
+
+            });
+
+        </script>
+    }
+
+}
+<script>
+
+    const checkboxes = document.querySelectorAll("input[name='MaSP']");
+
+    document.getElementById("btnChonTatCa").addEventListener("click", function () {
+
+        checkboxes.forEach(x => x.checked = true);
+
+    });
+
+    document.getElementById("btnBoChon").addEventListener("click", function () {
+
+        checkboxes.forEach(x => x.checked = false);
+
+    });
+
+</script>
